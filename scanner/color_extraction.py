@@ -278,7 +278,7 @@ def colordetector(ip_img):
     if(mark>50):
         mark = 50
     print(test1)
-    if(test1>165):
+    if(test1>160):
         test1 = True
         factor = np.median(np.divide(255,test).mean(axis=1),axis=0)
         print('Before filter factor', factor)
@@ -306,7 +306,7 @@ def colordetector(ip_img):
             if(temp>50):
                 temp = 50
             mark = mark + temp
-        if(test2<20):
+        if(test2<30):
             test2 = True
         else:
             test2 = False
