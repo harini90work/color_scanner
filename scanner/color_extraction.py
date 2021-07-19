@@ -278,7 +278,8 @@ def colordetector(ip_img):
     if(mark>50):
         mark = 50
     print(test1)
-    if(test1>160):
+    innercircle_intensity = int(test1)
+    if(test1>=160):
         test1 = True
         factor = np.median(np.divide(255,test).mean(axis=1),axis=0)
         print('Before filter factor', factor)
@@ -287,7 +288,7 @@ def colordetector(ip_img):
         print('After filter factor', factor)
     else:
         test1 = False
-        
+    outercircle_intensity  = 255
     #Check Outer Circle Median Color
     #test1 = True
     if(test1):
@@ -300,13 +301,15 @@ def colordetector(ip_img):
         testhsv = cv2.cvtColor(test,cv2.COLOR_BGR2HSV)
         test2 = np.mean(testhsv[:,:,2],axis=1).mean()
         print('Outer Circle Median color', test2)
-        if(test2>0):
+        outercircle_intensity  = test2
+        if(test2>=0):
+            outercircle_intensity = int(test2)
             temp = 30/test2
             temp = int((temp/2) *100)
             if(temp>50):
                 temp = 50
             mark = mark + temp
-        if(test2<30):
+        if(test2<=37):
             test2 = True
         else:
             test2 = False
@@ -326,7 +329,8 @@ def colordetector(ip_img):
         
     else:
         cv2.putText(op_img,'Keep Image within frame',(10,20),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,0))
-        cv2.putText(op_img,f'Camera Position Accuracy: {mark}',(10,60),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,0))
+        cv2.putText(op_img,f'Inner Circle Intensity: {innercircle_intensity}',(10,60),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,0))
+        cv2.putText(op_img,f'Outter Circle Intensity: {outercircle_intensity}',(10,90),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,0))
         
         #im.display(op_img)
     #im.display(main_img)
