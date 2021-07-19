@@ -141,6 +141,8 @@
 			<div class="container">
 				<div class="row align-items-center">
 					<div class="col-lg-7">
+						 <select id="videoSource"></select>
+						<button id = "button"> Access Camera </button>
 						<h1 class="h3"> Input Video Feed </h1>
 						<video autoplay="true" id="videoElement">
 						
@@ -151,6 +153,11 @@
 						<img  id ='opimg' ></img>
 					</div>
 				</div>
+				<div class="row">
+					<div class = "col-lg-3">
+						<button onclick="capture()">Start Scan</button>
+					</div>
+				</div>
 				<div class="row align-items-center">
 					<h1 id = "label2" class="h3"> Result </h1>
 					<div class="col-lg-12">
@@ -159,47 +166,81 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class = "col-lg-3">
-						<button onclick="capture()">Start Scan</button>
-					</div>
-				</div>
+				
 			</div>
 			
 			
 			<canvas id="canvas" style="overflow:auto" ></canvas>
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+ <script>
+	const video = document.getElementById('videoElement');
+	const button = document.getElementById('button');
+	const select = document.getElementById('videoSource');
+	let currentStream;
+
+	function stopMediaTracks(stream) {
+	stream.getTracks().forEach(track => {
+	track.stop();
+	});
+	}
+
+	function gotDevices(mediaDevices) {
+	select.innerHTML = '';
+	select.appendChild(document.createElement('option'));
+	let count = 1;
+	mediaDevices.forEach(mediaDevice => {
+	if (mediaDevice.kind === 'videoinput') {
+	  const option = document.createElement('option');
+	  option.value = mediaDevice.deviceId;
+	  const label = mediaDevice.label || `Camera ${count++}`;
+	  const textNode = document.createTextNode(label);
+	  option.appendChild(textNode);
+	  select.appendChild(option);
+	}
+	});
+	}
+
+	button.addEventListener('click', event => {
+	if (typeof currentStream !== 'undefined') {
+	stopMediaTracks(currentStream);
+	}
+	const videoConstraints = {};
+	if (select.value === '') {
+	videoConstraints.facingMode = 'environment';
+	} else {
+	videoConstraints.deviceId = { exact: select.value };
+	}
+	const constraints = {
+	video: videoConstraints,
+	audio: false
+	};
+	navigator.mediaDevices
+	.getUserMedia(constraints)
+	.then(stream => {
+	  currentStream = stream;
+	  video.srcObject = stream;
+	  return navigator.mediaDevices.enumerateDevices();
+	})
+	.then(gotDevices)
+	.catch(error => {
+	  console.error(error);
+	});
+	});
+
+	navigator.mediaDevices.enumerateDevices().then(gotDevices);
+ </script>
+ 
 			<script>
+			
+			
 				var label1 = document.querySelector("#label1"); 
 				label1.style.visibility = 'hidden'
 				var label2 = document.querySelector("#label2"); 
 				label2.style.visibility = 'hidden'
-				var video = document.querySelector("#videoElement");
-				var op_img = document.querySelector("#opimg");
-				if (navigator.mediaDevices.getUserMedia) {
-				  navigator.mediaDevices.getUserMedia({ video: true })
-					.then(function (stream) {
-					  video.srcObject = stream;
-					  video.play();
-					  
-						console.log('video loaded');
-					})
-					.catch(function (err0r) {
-					  console.log("Something went wrong!");
-					});
-				}
 				
-				function stop(e) {
-				  var stream = video.srcObject;
-				  var tracks = stream.getTracks();
-
-				  for (var i = 0; i < tracks.length; i++) {
-					var track = tracks[i];
-					track.stop();
-				  }
-
-				  video.srcObject = null;
-				}
+				var op_img = document.querySelector("#opimg");
 				
 				
 				function capture() {
