@@ -1,0 +1,1 @@
+web: gunicorn scanner_management.wsgi

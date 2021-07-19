@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}  
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'assets/img/traffic-light-icon[1].ico' %}">
+  <link rel="icon" type="image/png" href="{% static 'assets/img/window_icon.png' %}">
+  <title>
+    Color Pattern Scanner
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Nucleo Icons -->
+  <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link href="{% static 'assets/css/font-awesome.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link href="{% static 'assets/css/argon-design-system.css'%}?v=1.2.2" rel="stylesheet" />
+  
+  <style>
+	#container {
+		margin: 0px auto;
+		width: 500px;
+		height: 375px;
+		border: 10px #333 solid;
+	}
+	#videoElement {
+		width: 500px;
+		height: 375px;
+		background-color: #666;
+	}
+	</style>
+</head>
+
+<body class="landing-page">
+  <!-- Navbar -->
+  <nav id="navbar-main" class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light py-2">
+    <div class="container">
+      <a class="navbar-brand mr-lg-5" href="{% url 'home' %}">
+        <img src="{% static 'assets/img/brand/white.png' %}">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse collapse" id="navbar_global">
+        <div class="navbar-collapse-header">
+          <div class="row">
+            <div class="col-6 collapse-brand">
+              <a href="{% url 'home' %}">
+                <img src="{% static 'assets/img/brand/white.png' %}">
+              </a>
+            </div>
+            <div class="col-6 collapse-close">
+              <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link" data-toggle="dropdown" href="#" role="button">
+              <i class="ni ni-ui-04 d-lg-none"></i>
+              <span class="nav-link-inner--text">Color Scanner</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-xl">
+              <div class="dropdown-menu-inner">
+                <a href="#" class="media d-flex align-items-center">
+                  <div class="icon icon-shape bg-gradient-primary rounded-circle text-white">
+                    <i class="fas fa-bowling-ball"></i>
+                  </div>
+                  <div class="media-body ml-3">
+                    <h6 class="heading text-primary mb-md-1">Color Pattern Scanner</h6>
+                    <p class="description d-none d-md-inline-block mb-0">To Scan the specific Color patten and display the respective Hex code in Realtime.</p>
+                  </div>
+                </a>
+
+		
+              </div>
+            </div>
+          </li>
+          
+        </ul>
+        
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- End Navbar -->
+  <div class="wrapper">
+    <div class="section section-hero section-shaped">
+      <div class="shape shape-style-3 shape-default">
+        <span class="span-150"></span>
+        <span class="span-50"></span>
+        <span class="span-50"></span>
+        <span class="span-75"></span>
+        <span class="span-100"></span>
+        <span class="span-75"></span>
+        <span class="span-50"></span>
+        <span class="span-100"></span>
+        <span class="span-50"></span>
+        <span class="span-100"></span>
+      </div>
+      <div class="page-header">
+        <div class="container shape-container d-flex align-items-center py-lg">
+          <div class="col px-0">
+            <div class="row align-items-center justify-content-center">
+              <div class="col-lg-6 text-center">
+                <h1 class="text-white display-1">Color Pattern Scanner</h1>
+                <h2 class="display-4 font-weight-normal text-white">Scroll Down to Scan</h2>
+				<small><h6 class="font-weight-normal text-white">[Your Company Name]</h6></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="separator separator-bottom separator-skew zindex-100">
+        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="section features-1">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 mx-auto text-center">
+            <span class="badge badge-primary badge-pill mb-3">Insight</span>
+            <h3 class="display-3">Automatic Color Pattern Scanning System</h3>
+            <p class="lead">The Aim of the project is to automate the color scanning process to detect the specific color code from the scanner  </p>
+          </div>
+        </div>
+        {% block content %}
+		{% csrf_token %}
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-lg-7">
+						<h1 class="h3"> Input Video Feed </h1>
+						<video autoplay="true" id="videoElement">
+						
+						</video>
+					</div>
+					<div class = 'col-lg-5'>
+						<h1 id = "label1" class="h3"> Processed at Server </h1>
+						<img  id ='opimg' ></img>
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<h1 id = "label2" class="h3"> Result </h1>
+					<div class="col-lg-12">
+						<div id = "output_table">
+
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class = "col-lg-3">
+						<button onclick="capture()">Start Scan</button>
+					</div>
+				</div>
+			</div>
+			
+			
+			<canvas id="canvas" style="overflow:auto" ></canvas>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+			<script>
+				var label1 = document.querySelector("#label1"); 
+				label1.style.visibility = 'hidden'
+				var label2 = document.querySelector("#label2"); 
+				label2.style.visibility = 'hidden'
+				var video = document.querySelector("#videoElement");
+				var op_img = document.querySelector("#opimg");
+				if (navigator.mediaDevices.getUserMedia) {
+				  navigator.mediaDevices.getUserMedia({ video: true })
+					.then(function (stream) {
+					  video.srcObject = stream;
+					  video.play();
+					  
+						console.log('video loaded');
+					})
+					.catch(function (err0r) {
+					  console.log("Something went wrong!");
+					});
+				}
+				
+				function stop(e) {
+				  var stream = video.srcObject;
+				  var tracks = stream.getTracks();
+
+				  for (var i = 0; i < tracks.length; i++) {
+					var track = tracks[i];
+					track.stop();
+				  }
+
+				  video.srcObject = null;
+				}
+				
+				
+				function capture() {
+					var canvas = document.getElementById('canvas');
+					var video = document.getElementById('videoElement');
+					canvas.style.visibility = 'hidden'
+					canvas.width = video.videoWidth;
+					canvas.height = video.videoHeight;
+					c = canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight); // for drawing the video element on the canvas
+					
+					var c = document.getElementById("canvas");
+					var ctx = c.getContext("2d");
+					var img = document.getElementById("canvas");
+					ctx.drawImage(img, c.width, c.height);
+					var dataURL = c.toDataURL();
+					var token = '{{csrf_token}}';
+					$.ajax({
+						headers: { "X-CSRFToken": token },
+						type: "POST",
+						url: "{% url 'send_video' %}",
+						data : {
+							'image': dataURL,
+						},
+						success: function(data){
+							
+							if(data.scanned == 'notyet')
+								{
+									op_img.src = data.image
+									capture()
+								}
+							else
+							{
+								alert('Scan Completed')
+								var label2 = document.querySelector("#label2"); 
+								label2.style.visibility = 'visible'
+								var output_table = document.querySelector("#output_table");
+								op_img.src = data.image
+								output_table.innerHTML = data.df
+								alert(data.df)
+								
+							}
+							}
+						});
+						
+				}
+				
+				var myList = [
+				  { "name": "abssssc", "age": 50 },
+				  { "age": "25", "hobby": "swimming" },
+				  { "name": "xyz", "hobby": "programming" }
+				];
+
+				// Builds the HTML Table out of myList.
+				function buildHtmlTable(selector, json_data) {
+				  var myList = json_data
+				  var columns = addAllColumnHeaders(myList, selector);
+
+				  for (var i = 0; i < myList.length; i++) {
+					var row$ = $('<tr/>');
+					for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+					  var cellValue = myList[i][columns[colIndex]];
+					  if (cellValue == null) cellValue = "";
+					  row$.append($('<td/>').html(cellValue));
+					}
+					$(selector).append(row$);
+				  }
+				}
+
+				// Adds a header row to the table and returns the set of columns.
+				// Need to do union of keys from all records as some records may not contain
+				// all records.
+				function addAllColumnHeaders(myList, selector) {
+				  var columnSet = [];
+				  var headerTr$ = $('<tr/>');
+
+				  for (var i = 0; i < myList.length; i++) {
+					var rowHash = myList[i];
+					for (var key in rowHash) {
+					  if ($.inArray(key, columnSet) == -1) {
+						columnSet.push(key);
+						headerTr$.append($('<th/>').html(key));
+					  }
+					}
+				  }
+				  $(selector).append(headerTr$);
+
+				  return columnSet;
+				}
+				//buildHtmlTable('#output_table', myList)
+			</script>
+        
+        {% endblock %}
+      </div>
+    </div>
+    <br /><br />
+    <footer class="footer">
+      <div class="container">
+        <div class="row row-grid align-items-center mb-5">
+          <div class="col-lg-12">
+            <h3 class="text-primary font-weight-light mb-2">Thanks for visiting our site</h3>
+            <h4 class="mb-0 font-weight-light">[Any other message if you wish to include]</h4>
+          </div>
+          
+        </div>
+        <hr>
+        <div class="row align-items-center justify-content-md-between">
+          <div class="col-md-6">
+            <div class="copyright">
+              Copyright [Company Name]
+            </div>
+          </div>
+          <div class="col-md-6">
+            <ul class="nav nav-footer justify-content-end">
+              <li class="nav-item">
+                  
+                developed by <a href="" target="_blank"> K. Harini </a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{% static 'assets/js/core/jquery.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/core/popper.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/core/bootstrap.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/plugins/perfect-scrollbar.jquery.min.js' %}"></script>
+  <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+  <script src="{% static 'assets/js/plugins/bootstrap-switch.js' %}"></script>
+  <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+  <script src="{% static 'assets/js/plugins/nouislider.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/plugins/moment.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/datetimepicker.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/plugins/bootstrap-datepicker.min.js' %}"></script>
+  <!-- Control Center for Argon UI Kit: parallax effects, scripts for the example pages etc -->
+  <!--  Google Maps Plugin    -->
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+</body>
+
+</html>
