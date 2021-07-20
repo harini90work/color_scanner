@@ -244,8 +244,8 @@ print('All Functions Loaded successfully')
 
 
 
-increased_size = im.resize_image(reduced_size, fx=8, fy = 8, interpolation=cv2.INTER_NEAREST)
-im.display(increased_size)
-ref = im.readimg('./static/assets/img/masks/mask4.png')
-output, df, status = col_detect_main(increased_size)
-output1, df1, status1 = col_detect_main(img)
+#increased_size = im.resize_image(reduced_size, fx=8, fy = 8, interpolation=cv2.INTER_NEAREST)
+#im.display(increased_size)
+#ref = im.readimg('./static/assets/img/masks/mask4.png')
+#output, df, status = col_detect_main(increased_size)
+#output1, df1, status1 = col_detect_main(img)
