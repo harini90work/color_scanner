@@ -196,6 +196,7 @@ def colordetector(ip_img):
         cv2.putText(op_img,f'Outter Circle Intensity: {outercircle_intensity}',(10,90),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,0))
         
     op_img = im.resize_image(op_img, original_img, interpolation = cv2.INTER_CUBIC)
+    op_img = im.resize_image(op_img, fx=0.2, fy=0.2, interpolation = cv2.INTER_CUBIC)
     return op_img, final_result
 
 
