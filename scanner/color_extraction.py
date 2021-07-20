@@ -30,12 +30,10 @@ try:
 except:
     import Img_Proc as im
 import cv2
-import datetime as dt
-import matplotlib.pyplot as plt
 #%%
 #% Project Specific Functions
 
-def extract_circle(img, r = 35):
+def extract_circle(img, r = 60):
     circle_list = [(585,200,r,'Grid 1;3'),
                    (730,200,r,'Grid 1;4'),
                    (870,200,r,'Grid 1;5'),
@@ -64,6 +62,57 @@ def extract_circle(img, r = 35):
                    
                    ]
     return circle_list
+
+
+def extract_small_circle(cropped):
+    original = cropped.copy()
+    gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray,(9,9),2)
+    edge = cv2.Canny(blur, 1,24)
+    contours, _ = cv2.findContours(edge, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    last_min = None
+    for contour in contours:
+        cur_min = np.min(contour, axis = 0)
+        if(last_min is None):
+            last_min = cur_min
+        cur_array = np.array([last_min, cur_min])
+    #    print(cur_array)
+        last_min = np.min(cur_array, axis = 0)
+    if(last_min is None):
+        last_min = np.array([[0,0]])
+
+    last_max = None
+    for contour in contours:
+        cur_min = np.max(contour, axis = 0)
+        
+        if(last_max is None):
+            last_max = cur_min
+        cur_array = np.array([last_max, cur_min])
+    #    print(cur_array)
+        last_max = np.max(cur_array, axis = 0)
+    if(last_max is None):
+        last_max = np.array([[cropped.shape[0],cropped.shape[1]]])
+
+    cv2.boundingRect(np.array([last_max,last_min]))
+    x, y, w, h = cv2.boundingRect(np.array([last_max,last_min]))
+    offset = 15
+    x = x + offset
+    h = h - 2*offset
+    if(h<0):
+        x = x - offset
+        h = h + 2*offset
+        
+        
+    y = y + offset
+    w = w - 2*offset
+    if(w<0):
+        y = y - offset
+        w = w + 2*offset
+
+    
+    cropped = original[y:y+w,x:x+h]
+    return cropped, x,y,w,h
+
     
 def detect_color(main_img, original_img = None, factor = None):
     if(factor is None):
@@ -75,7 +124,7 @@ def detect_color(main_img, original_img = None, factor = None):
     op_img_final = im.resize_image(original_img,fx=2,fy=2, interpolation = cv2.INTER_CUBIC)
     #%
     circles = extract_circle(op_img_final)
-    cv2.imwrite('./input_image_considered.png',op_img_final)
+    #cv2.imwrite('./input_image_considered.png',op_img_final)
     
     output = op_img_final.copy()
     detected_circle = 0
@@ -85,7 +134,6 @@ def detect_color(main_img, original_img = None, factor = None):
                         
         if(len(circles)==21):
             detected_circle = len(circles)
-            old_output = output.copy()
             output = op_img_final.copy() 
             final_result = pd.DataFrame()
             count = 1
@@ -94,14 +142,25 @@ def detect_color(main_img, original_img = None, factor = None):
                 # draw the circle in the output image, then draw a rectangle
                 # corresponding to the center of the circle
                 #print(x,y,r)
-                if(r>40):
-                    r = 40
-                cropped = output[y-r+20:y+r-20,x-r+20:x+r-20]
+                #if(r>40):
+                #    r = 40
+                cropped = output[y-r:y+r,x-r:x+r]
+                cropped1 = cropped.copy()
+                #im.display(cropped)
+                cropped, x1, y1, w1, h1 = extract_small_circle(cropped)
+                #im.display(cropped)
+
                 cropped = factor*cropped
                 cropped[cropped>255] = 255
                 cropped = cropped.astype('uint8')
                 cropped = cv2.blur(cropped, (13,13))
-                output[y-r+20:y+r-20,x-r+20:x+r-20] = cropped
+                
+                cropped1 = factor*cropped1
+                cropped1[cropped1>255] = 255
+                cropped1 = cropped1.astype('uint8')
+                cropped1 = cv2.blur(cropped1, (13,13))
+                output[y-r:y+r,x-r:x+r] = cropped1
+                #im.display(output)
                 #
                 rgb = tuple(np.median(cropped,axis=1)[0].astype(int))
                 rgb = rgb[::-1]
@@ -133,7 +192,6 @@ def detect_color(main_img, original_img = None, factor = None):
 def colordetector(ip_img):
     #
     final_result = pd.DataFrame()
-    original_img = ip_img.copy()
     mask1 = im.readmask('./static/assets/img/masks/mask1.png')
     mask2 = im.readmask('./static/assets/img/masks/mask2.png')
     mask3 = im.readmask('./static/assets/img/masks/mask3.png')
@@ -195,7 +253,7 @@ def colordetector(ip_img):
         cv2.putText(op_img,f'Inner Circle Intensity: {innercircle_intensity}',(10,60),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,0))
         cv2.putText(op_img,f'Outter Circle Intensity: {outercircle_intensity}',(10,90),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,0))
         
-    op_img = im.resize_image(op_img, original_img, interpolation = cv2.INTER_CUBIC)
+    #op_img = im.resize_image(op_img, original_img, interpolation = cv2.INTER_CUBIC)
     #op_img = im.resize_image(op_img, fx=0.2, fy=0.2, interpolation = cv2.INTER_CUBIC)
     return op_img, final_result
 
@@ -213,6 +271,7 @@ def col_detect_main(ip_img):
     overlay = cv2.bitwise_and(overlay, overlay, mask = mask6)
     frame = ip_img.copy()
     output, df = colordetector(frame)
+    return output, df, status
     output = cv2.bitwise_xor(overlay,output)
     if(df.shape[0] == 21):
         status = True
@@ -220,11 +279,12 @@ def col_detect_main(ip_img):
     
 print('All Functions Loaded successfully')
 
-#img = im.readimg('./test.jpg')
+#img = im.readimg('./input_image_considered.png')
 #output4, df4, status4 = col_detect_main(img)
 
 #%%
 
+#%%
 #original_size = img.copy()
 #original_size = im.resize_image(img,fx=0.5,fy=0.5,interpolation=cv2.INTER_CUBIC)
 #im.display(original_size)
