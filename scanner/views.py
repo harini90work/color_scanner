@@ -3,6 +3,11 @@ from django.http import JsonResponse
 import numpy as np
 import base64
 from .color_extraction import *
+try:
+    from . import Img_Proc as im
+except:
+    import Img_Proc as im
+    
 def decode_img(img):
     header, encoded = img.split(",", 1)
     img_b64decode = base64.b64decode(encoded)
@@ -24,7 +29,7 @@ def get_videofeed(request):
     img = request.POST.get('image')
     img1 = decode_img(img)
     output, df, status = col_detect_main(img1)
-    
+    output = im.resize_image(output, fx=0.2, fy=0.2, interpolation = cv2.INTER_CUBIC)
     ip_img = encode_img(output)
     
     if(status):
