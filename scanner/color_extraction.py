@@ -271,7 +271,7 @@ def col_detect_main(ip_img):
     overlay = cv2.bitwise_and(overlay, overlay, mask = mask6)
     frame = ip_img.copy()
     output, df = colordetector(frame)
-    return output, df, status
+
     output = cv2.bitwise_xor(overlay,output)
     if(df.shape[0] == 21):
         status = True
