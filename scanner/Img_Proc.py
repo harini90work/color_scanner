@@ -4,6 +4,13 @@ import numpy as np
 import os
 
 #Image Functions used in the project
+def display(img, name = 'Preview', wait_sec = 0):
+    cv2.imshow(name, img)
+    if cv2.waitKey(wait_sec) & 0xFF == ord('q'):
+        pass
+    cv2.destroyAllWindows()   
+    
+    
 def resize_image(img, ref_img = None, color = (0,0,0), fx = None, fy = None, interpolation = None):
     if(ref_img is None):
         ref_img = img.copy()

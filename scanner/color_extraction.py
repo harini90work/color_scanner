@@ -200,7 +200,7 @@ def colordetector(ip_img):
 
 
 
-#%%
+#%
 def col_detect_main(ip_img):
     status = False
     mask4 = im.readimg('./static/assets/img/masks/mask4.png')
@@ -218,3 +218,34 @@ def col_detect_main(ip_img):
     return output, df, status
     
 print('All Functions Loaded successfully')
+
+#img = im.readimg('./test.jpg')
+#output4, df4, status4 = col_detect_main(img)
+
+#%%
+
+#original_size = img.copy()
+#original_size = im.resize_image(img,fx=0.5,fy=0.5,interpolation=cv2.INTER_CUBIC)
+#im.display(original_size)
+#output2, df2, status2 = col_detect_main(original_size)
+
+#reduced_size= original_size.copy()
+#reduced_size = im.resize_image(reduced_size, fx=0.25, fy=0.25, interpolation=cv2.INTER_CUBIC)
+
+#sr = cv2.dnn_superres.DnnSuperResImpl_create()
+#path = "ESPCN_x4.pb"
+#sr.readModel(path)
+#sr.setModel("espcn", 4)
+#result = sr.upsample(reduced_size)
+#result = im.resize_image(result, fx=2, fy = 2, interpolation=cv2.INTER_CUBIC)
+#output2, df2, status2 = col_detect_main(original_size)
+#%%
+
+
+
+
+increased_size = im.resize_image(reduced_size, fx=8, fy = 8, interpolation=cv2.INTER_NEAREST)
+im.display(increased_size)
+ref = im.readimg('./static/assets/img/masks/mask4.png')
+output, df, status = col_detect_main(increased_size)
+output1, df1, status1 = col_detect_main(img)
