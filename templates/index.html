@@ -181,66 +181,103 @@
 			
 			<canvas id="canvas" style="overflow:auto" ></canvas>
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
 <script>
-	const video = document.getElementById('videoElement');
-	const button = document.getElementById('button');
-	const select = document.getElementById('videoSource');
-	let currentStream;
 
-	function stopMediaTracks(stream) {
-	stream.getTracks().forEach(track => {
-	track.stop();
-	});
-	}
 
-	function gotDevices(mediaDevices) {
-	select.innerHTML = '';
-	select.appendChild(document.createElement('option'));
-	let count = 1;
-	mediaDevices.forEach(mediaDevice => {
-	if (mediaDevice.kind === 'videoinput') {
-	  const option = document.createElement('option');
-	  option.value = mediaDevice.deviceId;
-	  const label = mediaDevice.label || `Camera ${count++}`;
-	  const textNode = document.createTextNode(label);
-	  option.appendChild(textNode);
-	  select.appendChild(option);
-	}
-	});
-	}
-
-	button.addEventListener('click', event => {
-	if (typeof currentStream !== 'undefined') {
-	stopMediaTracks(currentStream);
-	}
-	const videoConstraints = {};
-	if (select.value === '') {
-	videoConstraints.facingMode = 'environment';
-	} else {
-	videoConstraints.deviceId = { exact: select.value };
-	}
-	const constraints = {
-	video: videoConstraints,
-	audio: false
-	};
-	navigator.mediaDevices
-	.getUserMedia(constraints)
-	.then(stream => {
-	  currentStream = stream;
-	  video.srcObject = stream;
-	  
-	  return navigator.mediaDevices.enumerateDevices();
-	})
-	.then(gotDevices)
-	.catch(error => {
-	  console.error(error);
-	});
-	start_video()
-	});
-
-	navigator.mediaDevices.enumerateDevices().then(gotDevices);
+function iOS() {
+  return [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ].includes(navigator.platform)
+  // iPad on iOS 13 detection
+  || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+}
+</script>
+<script>
+	if(iOS()){
 	
+		 video = document.getElementById('videoElement');
+		video.style.width = document.width + 'px';
+		video.style.height = document.height + 'px';
+		video.setAttribute('autoplay', '');
+		video.setAttribute('muted', '');
+		video.setAttribute('playsinline', '');
+
+		var constraints = {
+			 audio: false,
+			 video: {
+				 facingMode: 'user'
+			 }
+		}
+
+		navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
+			video.srcObject = stream;
+		});
+	}
+	else
+	{
+		const video = document.getElementById('videoElement');
+		const button = document.getElementById('button');
+		const select = document.getElementById('videoSource');
+		let currentStream;
+
+		function stopMediaTracks(stream) {
+		stream.getTracks().forEach(track => {
+		track.stop();
+		});
+		}
+
+		function gotDevices(mediaDevices) {
+		select.innerHTML = '';
+		select.appendChild(document.createElement('option'));
+		let count = 1;
+		mediaDevices.forEach(mediaDevice => {
+		if (mediaDevice.kind === 'videoinput') {
+		  const option = document.createElement('option');
+		  option.value = mediaDevice.deviceId;
+		  const label = mediaDevice.label || `Camera ${count++}`;
+		  const textNode = document.createTextNode(label);
+		  option.appendChild(textNode);
+		  select.appendChild(option);
+		}
+		});
+		}
+
+		button.addEventListener('click', event => {
+		if (typeof currentStream !== 'undefined') {
+		stopMediaTracks(currentStream);
+		}
+		const videoConstraints = {};
+		if (select.value === '') {
+		videoConstraints.facingMode = 'environment';
+		} else {
+		videoConstraints.deviceId = { exact: select.value };
+		}
+		const constraints = {
+		video: videoConstraints,
+		audio: false
+		};
+		navigator.mediaDevices
+		.getUserMedia(constraints)
+		.then(stream => {
+		  currentStream = stream;
+		  video.srcObject = stream;
+		  
+		  return navigator.mediaDevices.enumerateDevices();
+		})
+		.then(gotDevices)
+		.catch(error => {
+		  console.error(error);
+		});
+		start_video()
+		});
+
+		navigator.mediaDevices.enumerateDevices().then(gotDevices);
+	}
  </script>
 
  <script>
