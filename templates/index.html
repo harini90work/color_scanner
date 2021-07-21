@@ -217,6 +217,7 @@ function iOS() {
 		navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
 			video.srcObject = stream;
 		});
+		start_video()
 	}
 	else
 	{
