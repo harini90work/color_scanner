@@ -164,7 +164,7 @@
 				</div>
 				<div class="row">
 					<div class = "col-lg-3">
-						<button onclick="capture()">Start Scan</button>
+						<button id = "btnstart" onclick="capture()">Start Scan</button>
 					</div>
 				</div>
 				<div class="row align-items-center">
@@ -229,7 +229,7 @@
 	.then(stream => {
 	  currentStream = stream;
 	  video.srcObject = stream;
-	  video.play();
+	  
 	  return navigator.mediaDevices.enumerateDevices();
 	})
 	.then(gotDevices)
@@ -246,7 +246,9 @@
  <script>
 	function start_video()
 	{
+		
 		let video = document.getElementById('videoElement');
+		video.play();
 		let mask4 = cv.imread('mask4');
 		let mask5 = cv.imread('mask5');
 		let mask = new cv.Mat();
@@ -311,6 +313,8 @@
 				
 				
 				function capture() {
+					var btnstart = document.getElementById('btnstart');
+					btnstart.innerText = "Scanning Started"
 					var canvas = document.getElementById('canvas');
 					var video = document.getElementById('videoElement');
 					canvas.style.visibility = 'hidden'
@@ -341,12 +345,17 @@
 							else
 							{
 								alert('Scan Completed')
+								var btnstart = document.getElementById('btnstart');
+								btnstart.innerText = "Start Scan"
 								var label2 = document.querySelector("#label2"); 
 								label2.style.visibility = 'visible'
 								var output_table = document.querySelector("#output_table");
 								op_img.src = data.image
 								output_table.innerHTML = data.df
 								//alert(data.df)
+								let video = document.getElementById('videoElement');
+								video.stop();
+								
 								
 							}
 							}
