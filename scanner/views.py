@@ -29,9 +29,11 @@ def get_videofeed(request):
     img = request.POST.get('image')
     img1 = decode_img(img)
     orientation = request.POST.get('orientation')
+    server_feed = request.POST.get('serverfeed')
+    print(server_feed,type(server_feed))
     
     output, df, status, inner_circle_intensity, outercircle_intensity = col_detect_main(img1, orientation )
-   # output = im.resize_image(output, fx=0.2, fy=0.2, interpolation = cv2.INTER_CUBIC)
+    output = im.resize_image(output, fx=0.4, fy=0.4, interpolation = cv2.INTER_CUBIC)
     ip_img = encode_img(output)
     
     if(status):
@@ -49,4 +51,8 @@ def get_videofeed(request):
         'outter_circle': outercircle_intensity,
         
     }
+    if(server_feed == 'true'):
+        data['image'] = ip_img
+    else:
+        data['image'] = None
     return JsonResponse(data)
