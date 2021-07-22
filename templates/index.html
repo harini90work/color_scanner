@@ -491,6 +491,7 @@ function iOS() {
 						url: "{% url 'send_video' %}",
 						data : {
 							'image': dataURL,
+							'orientation': orientation1,
 						},
 						success: function(data){
 							
@@ -498,7 +499,7 @@ function iOS() {
 								{
 									op_img.src = data.image
 									capture()
-									alert(data.size)
+									
 								}
 							else
 							{
