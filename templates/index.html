@@ -476,9 +476,9 @@ function iOS() {
 					let video = document.getElementById(video_element);
 					video.play()
 					canvas.style.visibility = 'hidden'
-					canvas.width = video.videoWidth;
-					canvas.height = video.videoHeight;
-					c = canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight); // for drawing the video element on the canvas
+					canvas.width = video.videoWidth/4;
+					canvas.height = video.videoHeight/4;
+					c = canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth/4, video.videoHeight/4); // for drawing the video element on the canvas
 					
 					var c = document.getElementById("canvas");
 					var ctx = c.getContext("2d");
