@@ -474,10 +474,11 @@ function iOS() {
 					else
 						video_element = "videoElement"
 					let video = document.getElementById(video_element);
+					video.play()
 					canvas.style.visibility = 'hidden'
-					canvas.width = video.videoWidth/4;
-					canvas.height = video.videoHeight/4;
-					c = canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth/4, video.videoHeight/4); // for drawing the video element on the canvas
+					canvas.width = video.videoWidth;
+					canvas.height = video.videoHeight;
+					c = canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight); // for drawing the video element on the canvas
 					
 					var c = document.getElementById("canvas");
 					var ctx = c.getContext("2d");
@@ -497,8 +498,9 @@ function iOS() {
 							
 							if(data.scanned == 'notyet')
 								{
-									op_img.src = data.image
+									//op_img.src = data.image
 									capture()
+									console.log(data.inner_circle, data.outter_circle)
 									
 								}
 							else
@@ -509,7 +511,7 @@ function iOS() {
 								var label2 = document.querySelector("#label2"); 
 								label2.style.visibility = 'visible'
 								var output_table = document.querySelector("#output_table");
-								op_img.src = data.image
+								//op_img.src = data.image
 								output_table.innerHTML = data.df
 								//alert(data.df)
 								orientation1 = check_orientation()
@@ -518,10 +520,16 @@ function iOS() {
 								else
 									video_element = "videoElement"
 								let video = document.getElementById(video_element);
-								video.stop();
+								video.pause();
 								
 								
 							}
+							},
+						
+						error: function (jqXHR, exception) {
+								console.log('Ajax Error',jqXHR);
+								capture()
+								// Your error handling logic here..
 							}
 						});
 						
