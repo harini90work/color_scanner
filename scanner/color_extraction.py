@@ -48,7 +48,7 @@ cv2.imwrite(ofile, file2)
 
 #% Project Specific Functions
 
-def extract_circle(img, r = 60, xoffset = -63):
+def extract_circle(img, r = 60, xoffset = -63*2):
     circle_list = [(585+xoffset,200,r,'Grid 1;3'),
                    (730+xoffset,200,r,'Grid 1;4'),
                    (870+xoffset,200,r,'Grid 1;5'),
