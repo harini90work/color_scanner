@@ -28,7 +28,7 @@ def encode_img(img1):
 def get_videofeed(request):
     img = request.POST.get('image')
     img1 = decode_img(img)
-    output, df, status = col_detect_main(img1)
+    output, df, status, size = col_detect_main(img1)
    # output = im.resize_image(output, fx=0.2, fy=0.2, interpolation = cv2.INTER_CUBIC)
     ip_img = encode_img(output)
     
@@ -42,6 +42,8 @@ def get_videofeed(request):
     data = {
         'scanned': scanned,
         'image': ip_img,
-        'df' : df
+        'df' : df,
+        'size': str(size),
+        
     }
     return JsonResponse(data)

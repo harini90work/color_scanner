@@ -31,7 +31,7 @@ except:
     import Img_Proc as im
 import cv2
 #%% Resize image
-mask_name = 'mask1'
+mask_name = 'mask5'
 file = f'./static/assets/img/masks/{mask_name}.png'
 ofile = f'./static/assets/img/masks/{mask_name}-p.png'
 Ref_potrat = './static/assets/img/masks/Ref_potrat.png'
@@ -291,7 +291,7 @@ def col_detect_main(ip_img):
     output = cv2.bitwise_xor(overlay,output)
     if(df.shape[0] == 21):
         status = True
-    return output, df, status
+    return output, df, status, ip_img.shape
     
 print('All Functions Loaded successfully')
 
