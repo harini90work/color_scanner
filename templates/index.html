@@ -500,12 +500,13 @@ function iOS() {
 								{
 									//op_img.src = data.image
 									capture()
-									console.log(data.inner_circle, data.outter_circle)
+									//console.log(data.inner_circle, data.outter_circle)
 									
 								}
 							else
 							{
-								alert('Scan Completed')
+								video.pause();
+								
 								var btnstart = document.getElementById('btnstart');
 								btnstart.innerText = "Start Scan"
 								var label2 = document.querySelector("#label2"); 
@@ -520,8 +521,7 @@ function iOS() {
 								else
 									video_element = "videoElement"
 								let video = document.getElementById(video_element);
-								video.pause();
-								
+								alert('Scan Completed')
 								
 							}
 							},
