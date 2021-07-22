@@ -216,11 +216,11 @@ def colordetector(ip_img, orientation):
         mask3file = 'mask3.png'
     original_img = ip_img.copy()
     final_result = pd.DataFrame()
-    mask1 = im.readmask('./static/assets/img/masks/{mask1file}')
-    mask2 = im.readmask('./static/assets/img/masks/{mask2file}')
-    mask3 = im.readmask('./static/assets/img/masks/{mask3file}')
+    mask1 = im.readmask(f'./static/assets/img/masks/{mask1file}')
+    mask2 = im.readmask(f'./static/assets/img/masks/{mask2file}')
+    mask3 = im.readmask(f'./static/assets/img/masks/{mask3file}')
     mask4 = cv2.bitwise_xor(mask2, mask3)
-    
+    #print('./static/assets/img/masks/{mask1file}')
     main_img = cv2.bitwise_and(ip_img,ip_img,mask=mask1)
     outer_circle = cv2.bitwise_and(ip_img,ip_img,mask=mask2)
     inner_circle = cv2.bitwise_and(ip_img,ip_img,mask=mask3)
@@ -294,6 +294,7 @@ def col_detect_main(ip_img, orientation):
     status = False
     mask4 = im.readimg(f'./static/assets/img/masks/{mask4file}')
     mask5 = im.readimg(f'./static/assets/img/masks/{mask5file}')
+    
     ip_img = im.resize_image(ip_img,mask4,interpolation = cv2.INTER_CUBIC)
     mask6 = cv2.add(mask4, mask5)
     mask6 = cv2.cvtColor(mask6, cv2.COLOR_BGR2GRAY)
@@ -310,7 +311,7 @@ def col_detect_main(ip_img, orientation):
 print('All Functions Loaded successfully')
 
 #img = im.readimg('./input_image_considered.png')
-#output4, df4, status4 = col_detect_main(img)
+#output4, df4, status4,size = col_detect_main(img,'L')
 
 #%%
 
