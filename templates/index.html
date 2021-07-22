@@ -146,6 +146,8 @@
 						<div >
 						 <select id="videoSource"></select>
 						<button id = "button"> Access Camera </button>
+						<input type="checkbox" id="serverfeed" name="serverfeed" value="Yes">
+						<label for="serverfeed">Server Feed</label><br>
 						</div>
 						<h1 class="h3"> Input Video Feed </h1>
 						<div class="crop">	<video autoplay="true" id="videoElement" style = "display: none"  width = 640 height = 480>
@@ -161,9 +163,9 @@
 							<canvas id = "overlay" style = "display: none" ></canvas>
 						</div>
 					</div>
-					<div class = 'col-lg-5' style = "display: none">
+					<div class = 'col-lg-5' style = "display: none" id="serverop">
 						<h1 id = "label1" class="h3"> Processed at Server </h1>
-						<img  id ='opimg' ></img>
+						<img  id ='opimg' alt = "output"></img>
 					</div>
 				</div>
 				<div class="row">
@@ -486,6 +488,8 @@ function iOS() {
 					ctx.drawImage(img, c.width, c.height);
 					var dataURL = c.toDataURL();
 					var token = '{{csrf_token}}';
+					var serverfeed = document.getElementById('serverfeed').checked
+					
 					$.ajax({
 						headers: { "X-CSRFToken": token },
 						type: "POST",
@@ -493,12 +497,22 @@ function iOS() {
 						data : {
 							'image': dataURL,
 							'orientation': orientation1,
+							'serverfeed': serverfeed,
 						},
 						success: function(data){
 							
 							if(data.scanned == 'notyet')
 								{
-									//op_img.src = data.image
+									if(serverfeed)
+									{
+										console.log("img")
+										op_img.src = data.image
+										document.getElementById('serverop').style.display = "block" // ('display', '')
+									}
+									else
+									{
+										document.getElementById('serverop').style.display = "None" 
+									}
 									capture()
 									console.log(data.inner_circle, data.outter_circle)
 									
