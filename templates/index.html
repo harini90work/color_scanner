@@ -161,7 +161,7 @@
 							<canvas id = "overlay" style = "display: none" ></canvas>
 						</div>
 					</div>
-					<div class = 'col-lg-5' style = "">
+					<div class = 'col-lg-5' style = "display: none">
 						<h1 id = "label1" class="h3"> Processed at Server </h1>
 						<img  id ='opimg' ></img>
 					</div>
@@ -475,9 +475,9 @@ function iOS() {
 						video_element = "videoElement"
 					let video = document.getElementById(video_element);
 					canvas.style.visibility = 'hidden'
-					canvas.width = video.videoWidth/5;
-					canvas.height = video.videoHeight/5;
-					c = canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth/5, video.videoHeight/5); // for drawing the video element on the canvas
+					canvas.width = video.videoWidth/4;
+					canvas.height = video.videoHeight/4;
+					c = canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth/4, video.videoHeight/4); // for drawing the video element on the canvas
 					
 					var c = document.getElementById("canvas");
 					var ctx = c.getContext("2d");
