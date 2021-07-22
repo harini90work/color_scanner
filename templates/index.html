@@ -148,14 +148,17 @@
 						<button id = "button"> Access Camera </button>
 						</div>
 						<h1 class="h3"> Input Video Feed </h1>
-						<div class="crop">	<video autoplay="true" id="videoElement" style = "display: none" width = 640 height = 480>
+						<div class="crop">	<video autoplay="true" id="videoElement" style = "display: none"  width = 640 height = 480>
+							
+							</video>
+							<video autoplay="true" id="videoElement1" style = "display: none"  width = 480 height = 640>
 							
 							</video>
 							<canvas id="canvasOutput" style="object-fit: cover;" width = 480 height=480 ></canvas>
-							<img id="mask4" style ="display: none" width = 640 height = 480 src = {% static 'assets/img/masks/mask4.png' %} ></img>
-							<img id="mask5" style ="display: none" width = 640 height = 480 src = {% static 'assets/img/masks/mask5.png' %}></img>
-							<canvas id = "mask6" style = "display: none" width = 640 height = 480 ></canvas>
-							<canvas id = "overlay" style = "display: none" width = 640 height = 480 ></canvas>
+							<img id="mask4" style ="display: none"  src = {% static 'assets/img/masks/mask4.png' %} ></img>
+							<img id="mask5" style ="display: none"  src = {% static 'assets/img/masks/mask5.png' %}></img>
+							<canvas id = "mask6" style = "display: none"  ></canvas>
+							<canvas id = "overlay" style = "display: none" ></canvas>
 						</div>
 					</div>
 					<div class = 'col-lg-5' style = "display: none">
@@ -195,9 +198,82 @@
 }
 </style>
 <script>
+function update_mask(mask_name, sufix)
+{
+	mask = mask_name
+	element = document.getElementById(mask)
+	temp = element.src.split('/')
+	temp[temp.length -1] = mask+sufix //'mask4-p.png'
+	temp = temp.toString().replaceAll(',','/')
+	element.src = temp
+}
+function check_orientation()
+{
+	if(window.innerHeight > window.innerWidth)
+	{
+		//element = document.getElementById("videoElement")
+		//element.style.width = "480px";
+		//element.style.height = "640px";
+		
+		element = document.getElementById("mask4")
+		element.style.width = "480px";
+		element.style.height = "640px";
+		
+		element = document.getElementById("mask5")
+		element.style.width = "480px";
+		element.style.height = "640px";
+		
+		element = document.getElementById("mask6")
+		element.style.width = "480px";
+		element.style.height = "640px";
+		
+		element = document.getElementById("overlay")
+		element.style.width = "480px";
+		element.style.height = "640px";
+		
+		update_mask('mask4', '-p.png')
+		update_mask('mask5', '-p.png')
+
+		return 'P'
+	}
+	else
+	{
+		//element = document.getElementById("videoElement")
+		//element.style.height = "480px";
+		//element.style.width = "640px";
+		//element.height = "480px"
+		//element.width = "640px"
+		
+		element = document.getElementById("mask4")
+		element.style.height = "480px";
+		element.style.width = "640px";
+		
+		element = document.getElementById("mask5")
+		element.style.height = "480px";
+		element.style.width = "640px";
+		
+		element = document.getElementById("mask6")
+		element.style.height = "480px";
+		element.style.width = "640px";
+		
+		element = document.getElementById("overlay")
+		element.style.height = "480px";
+		element.style.width = "640px";
+		
+		update_mask('mask4', '.png')
+		update_mask('mask5', '.png')
+		
+		return 'L'
+	}
+	
+}
+
+</script>
+<script>
 
 
 function iOS() {
+	check_orientation()
   return [
     'iPad Simulator',
     'iPhone Simulator',
@@ -213,7 +289,12 @@ function iOS() {
 <script>
 	if(iOS()){
 	
-		 video = document.getElementById('videoElement');
+		orientation1 = check_orientation()
+		if(orientation1 == "P")
+			video_element = "videoElement1"
+		else
+			video_element = "videoElement"
+		const video = document.getElementById(video_element);
 		video.style.width = document.width + 'px';
 		video.style.height = document.height + 'px';
 		video.setAttribute('autoplay', '');
@@ -234,7 +315,14 @@ function iOS() {
 	}
 	else
 	{
-		const video = document.getElementById('videoElement');
+		orientation1 = check_orientation()
+		if(orientation1 == "P")
+			video_element = "videoElement1"
+		else
+			video_element = "videoElement"
+		console.log(video_element)
+		
+		const video = document.getElementById(video_element);
 		const button = document.getElementById('button');
 		const select = document.getElementById('videoSource');
 		let currentStream;
@@ -297,11 +385,17 @@ function iOS() {
  <script>
 	function start_video()
 	{
+		orientation1 = check_orientation()
+		if(orientation1 == "P")
+			video_element = "videoElement1"
+		else
+			video_element = "videoElement"
+		let video = document.getElementById(video_element);
 		
-		let video = document.getElementById('videoElement');
 		video.play();
 		let mask4 = cv.imread('mask4');
 		let mask5 = cv.imread('mask5');
+		
 		let mask = new cv.Mat();
 		let mask6 = new cv.Mat();
 		let maskInv = new cv.Mat();
@@ -309,8 +403,11 @@ function iOS() {
 		let imgFg = new cv.Mat();
 		let sum = new cv.Mat();
 		let dtype = -1;
+		console.log(mask4.size(),mask5.size(),video.height)
 		cv.add(mask4, mask5, mask6, mask, dtype);
+		
 		cv.cvtColor(mask6, mask6, cv.COLOR_RGBA2GRAY);
+		
 		cv.bitwise_not(mask6, maskInv);
 		let scalar = new cv.Scalar(255, 0, 0, 255);
 		let overlay = new cv.Mat(mask6.rows, mask6.cols, mask4.type(), scalar);
@@ -333,6 +430,7 @@ function iOS() {
 				//	dst.delete();
 				//	return;
 				//}
+				//check_orientation()
 				let begin = Date.now();
 				// start processing.
 				cap.read(src);
@@ -370,7 +468,12 @@ function iOS() {
 					var btnstart = document.getElementById('btnstart');
 					btnstart.innerText = "Scanning Started"
 					var canvas = document.getElementById('canvas');
-					var video = document.getElementById('videoElement');
+					orientation1	 = check_orientation()
+					if(orientation1 == "P")
+						video_element = "videoElement1"
+					else
+						video_element = "videoElement"
+					let video = document.getElementById(video_element);
 					canvas.style.visibility = 'hidden'
 					canvas.width = video.videoWidth/5;
 					canvas.height = video.videoHeight/5;
@@ -407,7 +510,12 @@ function iOS() {
 								op_img.src = data.image
 								output_table.innerHTML = data.df
 								//alert(data.df)
-								let video = document.getElementById('videoElement');
+								orientation1 = check_orientation()
+								if(orientation1 == "P")
+									video_element = "videoElement1"
+								else
+									video_element = "videoElement"
+								let video = document.getElementById(video_element);
 								video.stop();
 								
 								
