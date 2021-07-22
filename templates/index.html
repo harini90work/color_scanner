@@ -505,6 +505,7 @@ function iOS() {
 								}
 							else
 							{
+								let video = document.getElementById(video_element);
 								video.pause();
 								
 								var btnstart = document.getElementById('btnstart');
@@ -520,7 +521,7 @@ function iOS() {
 									video_element = "videoElement1"
 								else
 									video_element = "videoElement"
-								let video = document.getElementById(video_element);
+								
 								alert('Scan Completed')
 								
 							}
