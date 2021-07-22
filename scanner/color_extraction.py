@@ -31,14 +31,14 @@ except:
     import Img_Proc as im
 import cv2
 #%% Resize image
-mask_name = 'mask5'
-file = f'./static/assets/img/masks/{mask_name}.png'
-ofile = f'./static/assets/img/masks/{mask_name}-p.png'
-Ref_potrat = './static/assets/img/masks/Ref_potrat.png'
-file1 = im.readimg(file)
-ref = im.readimg(Ref_potrat)
-file2 = im.resize_image(file1, ref)
-cv2.imwrite(ofile, file2)
+#mask_name = 'mask5'
+#file = f'./static/assets/img/masks/{mask_name}.png'
+#ofile = f'./static/assets/img/masks/{mask_name}-p.png'
+#Ref_potrat = './static/assets/img/masks/Ref_potrat.png'
+#file1 = im.readimg(file)
+#ref = im.readimg(Ref_potrat)
+#file2 = im.resize_image(file1, ref)
+#cv2.imwrite(ofile, file2)
 #shift the image
 #file = './static/assets/img/masks/mask1.png'
 #file1 = im.readimg(file)
@@ -48,32 +48,32 @@ cv2.imwrite(ofile, file2)
 
 #% Project Specific Functions
 
-def extract_circle(img, r = 60, xoffset = -63*2):
-    circle_list = [(585+xoffset,200,r,'Grid 1;3'),
-                   (730+xoffset,200,r,'Grid 1;4'),
-                   (870+xoffset,200,r,'Grid 1;5'),
+def extract_circle(img, r = 50, xoffset = 0):
+    circle_list = [(480+xoffset,200,r,'Grid 1;3'),
+                   (630+xoffset,200,r,'Grid 1;4'),
+                   (780+xoffset,200,r,'Grid 1;5'),
                    
-                   (585+xoffset,340,r,'Grid 2;3'),
-                   (730+xoffset,340,r,'Grid 2;4'),
-                   (870+xoffset,340,r,'Grid 2;5'),
+                   (480+xoffset,345,r,'Grid 2;3'),
+                   (630+xoffset,345,r,'Grid 2;4'),
+                   (780+xoffset,345,r,'Grid 2;5'),
                    
-                   (300+xoffset,480,r,'Grid 3;1'),
-                   (440+xoffset,480,r,'Grid 3;2'),
-                   (585+xoffset,480,r,'Grid 3;3'),
-                   (730+xoffset,480,r,'Grid 3;4'),
-                   (870+xoffset,480,r,'Grid 3;5'),
+                   (180+xoffset,490,r,'Grid 3;1'),
+                   (330+xoffset,490,r,'Grid 3;2'),
+                   (480+xoffset,490,r,'Grid 3;3'),
+                   (630+xoffset,490,r,'Grid 3;4'),
+                   (780+xoffset,490,r,'Grid 3;5'),
                    
-                   (300+xoffset,615,r,'Grid 4;1'),
-                   (440+xoffset,615,r,'Grid 4;2'),
-                   (585+xoffset,615,r,'Grid 4;3'),
-                   (730+xoffset,615,r,'Grid 4;4'),
-                   (870+xoffset,615,r,'Grid 4;5'),
+                   (180+xoffset,635,r,'Grid 4;1'),
+                   (330+xoffset,635,r,'Grid 4;2'),
+                   (480+xoffset,635,r,'Grid 4;3'),
+                   (630+xoffset,635,r,'Grid 4;4'),
+                   (780+xoffset,635,r,'Grid 4;5'),
                    
-                   (300+xoffset,755,r,'Grid 5;1'),
-                   (440+xoffset,755,r,'Grid 5;2'),
-                   (585+xoffset,755,r,'Grid 5;3'),
-                   (730+xoffset,755,r,'Grid 5;4'),
-                   (870+xoffset,755,r,'Grid 5;5'),
+                   (180+xoffset,790,r,'Grid 5;1'),
+                   (330+xoffset,790,r,'Grid 5;2'),
+                   (480+xoffset,790,r,'Grid 5;3'),
+                   (630+xoffset,790,r,'Grid 5;4'),
+                   (780+xoffset,790,r,'Grid 5;5'),
                    
                    ]
     return circle_list
@@ -139,7 +139,7 @@ def detect_color(main_img, original_img = None, factor = None):
     op_img_final = im.resize_image(original_img,fx=2,fy=2, interpolation = cv2.INTER_CUBIC)
     #%
     circles = extract_circle(op_img_final)
-    #cv2.imwrite('./input_image_considered.png',op_img_final)
+    cv2.imwrite('./input_image_considered.png',op_img_final)
     
     output = op_img_final.copy()
     detected_circle = 0
@@ -236,11 +236,11 @@ def colordetector(ip_img, orientation):
         test1 = 0
 
     innercircle_intensity = int(test1)
-    if(test1>=160):
+    if(test1>=157):
         test1 = True
         factor = np.median(np.divide(255,test).mean(axis=1),axis=0)
         print('Before filter factor', factor)
-        factor[(factor>1.8) & (factor<3)] = 1.8
+        factor[(factor>1.4) & (factor<3)] = 1.4
         factor[factor>3] = 1
         print('After filter factor', factor)
     else:
@@ -279,7 +279,7 @@ def colordetector(ip_img, orientation):
         
     op_img = im.resize_image(op_img, original_img, interpolation = cv2.INTER_CUBIC)
     #op_img = im.resize_image(op_img, fx=0.2, fy=0.2, interpolation = cv2.INTER_CUBIC)
-    return op_img, final_result
+    return op_img, final_result, innercircle_intensity, outercircle_intensity
 
 
 
@@ -301,18 +301,18 @@ def col_detect_main(ip_img, orientation):
     overlay = im.blankimg(mask6.shape[0], mask6.shape[1])
     overlay = cv2.bitwise_and(overlay, overlay, mask = mask6)
     frame = ip_img.copy()
-    output, df = colordetector(frame, orientation)
+    output, df, inner_circle_intensity, outercircle_intensity = colordetector(frame, orientation)
 
     output = cv2.bitwise_xor(overlay,output)
     if(df.shape[0] == 21):
         status = True
-    return output, df, status, ip_img.shape
+    return output, df, status, inner_circle_intensity, outercircle_intensity
     
 print('All Functions Loaded successfully')
 
 #img = im.readimg('./input_image_considered.png')
-#output4, df4, status4,size = col_detect_main(img,'L')
-
+#output4, df4, status4, inner_circle, outter_circle = col_detect_main(img,'L')
+#im.display(output4)
 #%%
 
 #%%
