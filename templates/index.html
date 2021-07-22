@@ -148,14 +148,15 @@
 						<button id = "button"> Access Camera </button>
 						</div>
 						<h1 class="h3"> Input Video Feed </h1>
-						<video autoplay="true" id="videoElement" style = "display: none" width = 640 height = 480>
-						
-						</video>
-						<canvas id="canvasOutput" style="overflow:auto" ></canvas>
-						<img id="mask4" style ="display: none" width = 640 height = 480 src = {% static 'assets/img/masks/mask4.png' %} ></img>
-						<img id="mask5" style ="display: none" width = 640 height = 480 src = {% static 'assets/img/masks/mask5.png' %}></img>
-						<canvas id = "mask6" style = "display: none"></canvas>
-						<canvas id = "overlay" style = "display: none"></canvas>
+						<div class="crop">	<video autoplay="true" id="videoElement" style = "display: none" width = 640 height = 480>
+							
+							</video>
+							<canvas id="canvasOutput" style="object-fit: cover;" width = 480 height=480 ></canvas>
+							<img id="mask4" style ="display: none" width = 640 height = 480 src = {% static 'assets/img/masks/mask4.png' %} ></img>
+							<img id="mask5" style ="display: none" width = 640 height = 480 src = {% static 'assets/img/masks/mask5.png' %}></img>
+							<canvas id = "mask6" style = "display: none" width = 640 height = 480 ></canvas>
+							<canvas id = "overlay" style = "display: none" width = 640 height = 480 ></canvas>
+						</div>
 					</div>
 					<div class = 'col-lg-5' style = "display: none">
 						<h1 id = "label1" class="h3"> Processed at Server </h1>
@@ -181,6 +182,18 @@
 			
 			<canvas id="canvas" style="overflow:auto" ></canvas>
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<style>
+.crop{
+  overflow:hidden;
+  display:block;
+  width: 4800px;
+}
+#videoElement{
+  margin-left: -15px;
+}
+</style>
 <script>
 
 
@@ -325,7 +338,10 @@ function iOS() {
 				cap.read(src);
 				cv.bitwise_and(src, src, imgBg, maskInv);
 				cv.add(imgBg, imgFg, sum);
-				cv.imshow('canvasOutput', sum);
+				let rect = new cv.Rect(0, 0, 480, 480);
+				final_sum = sum.roi(rect);
+				cv.imshow('canvasOutput', final_sum);
+				final_sum.delete()
 				// schedule the next one.
 				let delay = 1000/FPS - (Date.now() - begin);
 				setTimeout(processVideo, delay);
