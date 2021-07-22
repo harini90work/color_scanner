@@ -31,34 +31,40 @@ except:
     import Img_Proc as im
 import cv2
 #%%
+#file = './static/assets/img/masks/mask5.png'
+#file1 = im.readimg(file)
+#file1[:,0:640-63] =  file1[:,63:]
+#cv2.imwrite(file, file1)
+#%%
+
 #% Project Specific Functions
 
-def extract_circle(img, r = 60):
-    circle_list = [(585,200,r,'Grid 1;3'),
-                   (730,200,r,'Grid 1;4'),
-                   (870,200,r,'Grid 1;5'),
+def extract_circle(img, r = 60, xoffset = -63):
+    circle_list = [(585+xoffset,200,r,'Grid 1;3'),
+                   (730+xoffset,200,r,'Grid 1;4'),
+                   (870+xoffset,200,r,'Grid 1;5'),
                    
-                   (585,340,r,'Grid 2;3'),
-                   (730,340,r,'Grid 2;4'),
-                   (870,340,r,'Grid 2;5'),
+                   (585+xoffset,340,r,'Grid 2;3'),
+                   (730+xoffset,340,r,'Grid 2;4'),
+                   (870+xoffset,340,r,'Grid 2;5'),
                    
-                   (300,480,r,'Grid 3;1'),
-                   (440,480,r,'Grid 3;2'),
-                   (585,480,r,'Grid 3;3'),
-                   (730,480,r,'Grid 3;4'),
-                   (870,480,r,'Grid 3;5'),
+                   (300+xoffset,480,r,'Grid 3;1'),
+                   (440+xoffset,480,r,'Grid 3;2'),
+                   (585+xoffset,480,r,'Grid 3;3'),
+                   (730+xoffset,480,r,'Grid 3;4'),
+                   (870+xoffset,480,r,'Grid 3;5'),
                    
-                   (300,615,r,'Grid 4;1'),
-                   (440,615,r,'Grid 4;2'),
-                   (585,615,r,'Grid 4;3'),
-                   (730,615,r,'Grid 4;4'),
-                   (870,615,r,'Grid 4;5'),
+                   (300+xoffset,615,r,'Grid 4;1'),
+                   (440+xoffset,615,r,'Grid 4;2'),
+                   (585+xoffset,615,r,'Grid 4;3'),
+                   (730+xoffset,615,r,'Grid 4;4'),
+                   (870+xoffset,615,r,'Grid 4;5'),
                    
-                   (300,755,r,'Grid 5;1'),
-                   (440,755,r,'Grid 5;2'),
-                   (585,755,r,'Grid 5;3'),
-                   (730,755,r,'Grid 5;4'),
-                   (870,755,r,'Grid 5;5'),
+                   (300+xoffset,755,r,'Grid 5;1'),
+                   (440+xoffset,755,r,'Grid 5;2'),
+                   (585+xoffset,755,r,'Grid 5;3'),
+                   (730+xoffset,755,r,'Grid 5;4'),
+                   (870+xoffset,755,r,'Grid 5;5'),
                    
                    ]
     return circle_list
