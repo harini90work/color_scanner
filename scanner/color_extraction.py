@@ -30,8 +30,17 @@ try:
 except:
     import Img_Proc as im
 import cv2
-#%%
-#file = './static/assets/img/masks/mask5.png'
+#%% Resize image
+mask_name = 'mask1'
+file = f'./static/assets/img/masks/{mask_name}.png'
+ofile = f'./static/assets/img/masks/{mask_name}-p.png'
+Ref_potrat = './static/assets/img/masks/Ref_potrat.png'
+file1 = im.readimg(file)
+ref = im.readimg(Ref_potrat)
+file2 = im.resize_image(file1, ref)
+cv2.imwrite(ofile, file2)
+#shift the image
+#file = './static/assets/img/masks/mask1.png'
 #file1 = im.readimg(file)
 #file1[:,0:640-63] =  file1[:,63:]
 #cv2.imwrite(file, file1)

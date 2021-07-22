@@ -26,7 +26,15 @@ def resize_image(img, ref_img = None, color = (0,0,0), fx = None, fy = None, int
     yy = (hh - ht) // 2
     if(interpolation is None):
         image_final = np.full((hh,ww,cc), color, dtype=np.uint8)
-        image_final[yy:yy+ht, xx:xx+wd] = img
+        ymin = min(img.shape[0],image_final.shape[0])
+        xmin = min(img.shape[1],image_final.shape[1]) 
+        roi = img[0:ymin,0:xmin]
+        
+        image_final[0:ymin,0:xmin] =  roi
+        #display(roi)
+        #print(img.shape, image_final.shape)
+        #print(yy,ht, xx, wd)
+        #image_final[yy:yy+ht, xx:xx+wd] = img
     else:
         if((fx is None) or (fy is None)):
             image_final = cv2.resize(img, (ww, hh), interpolation = interpolation)
