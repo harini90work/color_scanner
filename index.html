@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}  
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'assets/img/traffic-light-icon[1].ico' %}">
+  <link rel="icon" type="image/png" href="{% static 'assets/img/window_icon.png' %}">
+    <script src="{% static 'assets/js/opencv.js' %}" type="text/javascript"></script>
+
+  <title>
+    Color Pattern Scanner
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Nucleo Icons -->
+  <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link href="{% static 'assets/css/font-awesome.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link href="{% static 'assets/css/argon-design-system.css'%}?v=1.2.2" rel="stylesheet" />
+  
+  <style>
+	#container {
+		margin: 0px auto;
+		width: 500px;
+		height: 375px;
+		border: 10px #333 solid;
+	}
+	#videoElement {
+		width: 500px;
+		height: 375px;
+		background-color: #666;
+	}
+	</style>
+</head>
+
+<body class="landing-page">
+  <!-- Navbar -->
+  <nav id="navbar-main" class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light py-2">
+    <div class="container">
+      <a class="navbar-brand mr-lg-5" href="{% url 'home' %}">
+        <img src="{% static 'assets/img/brand/white.png' %}">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse collapse" id="navbar_global">
+        <div class="navbar-collapse-header">
+          <div class="row">
+            <div class="col-6 collapse-brand">
+              <a href="{% url 'home' %}">
+                <img src="{% static 'assets/img/brand/white.png' %}">
+              </a>
+            </div>
+            <div class="col-6 collapse-close">
+              <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link" data-toggle="dropdown" href="#" role="button">
+              <i class="ni ni-ui-04 d-lg-none"></i>
+              <span class="nav-link-inner--text">Color Scanner</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-xl">
+              <div class="dropdown-menu-inner">
+                <a href="#" class="media d-flex align-items-center">
+                  <div class="icon icon-shape bg-gradient-primary rounded-circle text-white">
+                    <i class="fas fa-bowling-ball"></i>
+                  </div>
+                  <div class="media-body ml-3">
+                    <h6 class="heading text-primary mb-md-1">Color Pattern Scanner</h6>
+                    <p class="description d-none d-md-inline-block mb-0">To Scan the specific Color patten and display the respective Hex code in Realtime.</p>
+                  </div>
+                </a>
+
+		
+              </div>
+            </div>
+          </li>
+          
+        </ul>
+        
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- End Navbar -->
+  <div class="wrapper">
+    <div class="section section-hero section-shaped">
+      <div class="shape shape-style-3 shape-default">
+        <span class="span-150"></span>
+        <span class="span-50"></span>
+        <span class="span-50"></span>
+        <span class="span-75"></span>
+        <span class="span-100"></span>
+        <span class="span-75"></span>
+        <span class="span-50"></span>
+        <span class="span-100"></span>
+        <span class="span-50"></span>
+        <span class="span-100"></span>
+      </div>
+      <div class="page-header">
+        <div class="container shape-container d-flex align-items-center py-lg">
+          <div class="col px-0">
+            <div class="row align-items-center justify-content-center">
+              <div class="col-lg-6 text-center">
+                <h1 class="text-white display-1">Color Pattern Scanner</h1>
+                <h2 class="display-4 font-weight-normal text-white">Scroll Down to Scan</h2>
+				<small><h6 class="font-weight-normal text-white">[Your Company Name]</h6></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="separator separator-bottom separator-skew zindex-100">
+        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="section features-1">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 mx-auto text-center">
+            <span class="badge badge-primary badge-pill mb-3">Insight</span>
+            <h3 class="display-3">Automatic Color Pattern Scanning System</h3>
+            <p class="lead">The Aim of the project is to automate the color scanning process to detect the specific color code from the scanner  </p>
+          </div>
+        </div>
+        {% block content %}
+		{% csrf_token %}
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-lg-7">
+						<div >
+						 <select id="videoSource"></select>
+						<button id = "button"> Access Camera </button>
+						</div>
+						<h1 class="h3"> Input Video Feed </h1>
+						<div class="crop">	<video autoplay="true" id="videoElement" style = "display: none"  width = 640 height = 480>
+							
+							</video>
+							<video autoplay="true" id="videoElement1" style = "display: none"  width = 480 height = 640>
+							
+							</video>
+							<canvas id="canvasOutput" style="object-fit: cover;" width = 480 height=480 ></canvas>
+							<img id="mask4" style ="display: none"  src = {% static 'assets/img/masks/mask4.png' %} ></img>
+							<img id="mask5" style ="display: none"  src = {% static 'assets/img/masks/mask5.png' %}></img>
+							<canvas id = "mask6" style = "display: none"  ></canvas>
+							<canvas id = "overlay" style = "display: none" ></canvas>
+						</div>
+					</div>
+					<div class = 'col-lg-5' style = "display: none">
+						<h1 id = "label1" class="h3"> Processed at Server </h1>
+						<img  id ='opimg' ></img>
+					</div>
+				</div>
+				<div class="row">
+					<div class = "col-lg-3">
+						<button id = "btnstart" onclick="capture()">Start Scan</button>
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<h1 id = "label2" class="h3"> Result </h1>
+					<div class="col-lg-12">
+						<div id = "output_table">
+
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+			
+			<canvas id="canvas" style="overflow:auto" ></canvas>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<style>
+.crop{
+  overflow:hidden;
+  display:block;
+  width: 4800px;
+}
+#videoElement{
+  margin-left: -15px;
+}
+</style>
+<script>
+function update_mask(mask_name, sufix)
+{
+	mask = mask_name
+	element = document.getElementById(mask)
+	temp = element.src.split('/')
+	temp[temp.length -1] = mask+sufix //'mask4-p.png'
+	temp = temp.toString().replaceAll(',','/')
+	element.src = temp
+}
+function check_orientation()
+{
+	if(window.innerHeight > window.innerWidth)
+	{
+		//element = document.getElementById("videoElement")
+		//element.style.width = "480px";
+		//element.style.height = "640px";
+		
+		element = document.getElementById("mask4")
+		element.style.width = "480px";
+		element.style.height = "640px";
+		
+		element = document.getElementById("mask5")
+		element.style.width = "480px";
+		element.style.height = "640px";
+		
+		element = document.getElementById("mask6")
+		element.style.width = "480px";
+		element.style.height = "640px";
+		
+		element = document.getElementById("overlay")
+		element.style.width = "480px";
+		element.style.height = "640px";
+		
+		update_mask('mask4', '-p.png')
+		update_mask('mask5', '-p.png')
+
+		return 'P'
+	}
+	else
+	{
+		//element = document.getElementById("videoElement")
+		//element.style.height = "480px";
+		//element.style.width = "640px";
+		//element.height = "480px"
+		//element.width = "640px"
+		
+		element = document.getElementById("mask4")
+		element.style.height = "480px";
+		element.style.width = "640px";
+		
+		element = document.getElementById("mask5")
+		element.style.height = "480px";
+		element.style.width = "640px";
+		
+		element = document.getElementById("mask6")
+		element.style.height = "480px";
+		element.style.width = "640px";
+		
+		element = document.getElementById("overlay")
+		element.style.height = "480px";
+		element.style.width = "640px";
+		
+		update_mask('mask4', '.png')
+		update_mask('mask5', '.png')
+		
+		return 'L'
+	}
+	
+}
+
+</script>
+<script>
+
+
+function iOS() {
+	check_orientation()
+  return [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ].includes(navigator.platform)
+  // iPad on iOS 13 detection
+  || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+}
+</script>
+<script>
+	if(iOS()){
+	
+		orientation1 = check_orientation()
+		if(orientation1 == "P")
+			video_element = "videoElement1"
+		else
+			video_element = "videoElement"
+		const video = document.getElementById(video_element);
+		video.style.width = document.width + 'px';
+		video.style.height = document.height + 'px';
+		video.setAttribute('autoplay', '');
+		video.setAttribute('muted', '');
+		video.setAttribute('playsinline', '');
+
+		var constraints = {
+			 audio: false,
+			 video: {
+				 facingMode: 'environment'
+			 }
+		}
+
+		navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
+			video.srcObject = stream;
+		});
+		start_video()
+	}
+	else
+	{
+		orientation1 = check_orientation()
+		if(orientation1 == "P")
+			video_element = "videoElement1"
+		else
+			video_element = "videoElement"
+		console.log(video_element)
+		
+		const video = document.getElementById(video_element);
+		const button = document.getElementById('button');
+		const select = document.getElementById('videoSource');
+		let currentStream;
+
+		function stopMediaTracks(stream) {
+		stream.getTracks().forEach(track => {
+		track.stop();
+		});
+		}
+
+		function gotDevices(mediaDevices) {
+		select.innerHTML = '';
+		select.appendChild(document.createElement('option'));
+		let count = 1;
+		mediaDevices.forEach(mediaDevice => {
+		if (mediaDevice.kind === 'videoinput') {
+		  const option = document.createElement('option');
+		  option.value = mediaDevice.deviceId;
+		  const label = mediaDevice.label || `Camera ${count++}`;
+		  const textNode = document.createTextNode(label);
+		  option.appendChild(textNode);
+		  select.appendChild(option);
+		}
+		});
+		}
+
+		button.addEventListener('click', event => {
+		if (typeof currentStream !== 'undefined') {
+		stopMediaTracks(currentStream);
+		}
+		const videoConstraints = {};
+		if (select.value === '') {
+		videoConstraints.facingMode = 'environment';
+		} else {
+		videoConstraints.deviceId = { exact: select.value };
+		}
+		const constraints = {
+		video: videoConstraints,
+		audio: false
+		};
+		navigator.mediaDevices
+		.getUserMedia(constraints)
+		.then(stream => {
+		  currentStream = stream;
+		  video.srcObject = stream;
+		  
+		  return navigator.mediaDevices.enumerateDevices();
+		})
+		.then(gotDevices)
+		.catch(error => {
+		  console.error(error);
+		});
+		start_video()
+		});
+
+		navigator.mediaDevices.enumerateDevices().then(gotDevices);
+	}
+ </script>
+
+ <script>
+	function start_video()
+	{
+		orientation1 = check_orientation()
+		if(orientation1 == "P")
+			video_element = "videoElement1"
+		else
+			video_element = "videoElement"
+		let video = document.getElementById(video_element);
+		
+		video.play();
+		let mask4 = cv.imread('mask4');
+		let mask5 = cv.imread('mask5');
+		
+		let mask = new cv.Mat();
+		let mask6 = new cv.Mat();
+		let maskInv = new cv.Mat();
+		let imgBg = new cv.Mat();
+		let imgFg = new cv.Mat();
+		let sum = new cv.Mat();
+		let dtype = -1;
+		console.log(mask4.size(),mask5.size(),video.height)
+		cv.add(mask4, mask5, mask6, mask, dtype);
+		
+		cv.cvtColor(mask6, mask6, cv.COLOR_RGBA2GRAY);
+		
+		cv.bitwise_not(mask6, maskInv);
+		let scalar = new cv.Scalar(255, 0, 0, 255);
+		let overlay = new cv.Mat(mask6.rows, mask6.cols, mask4.type(), scalar);
+		cv.bitwise_and(overlay, overlay, imgFg, mask6);
+			
+		cv.imshow('mask6', mask6);
+		cv.imshow('overlay', imgFg)
+		mask4.delete(); mask5.delete(); mask6.delete(); mask.delete()
+		
+		let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+		
+		let cap = new cv.VideoCapture(video);
+		
+		const FPS = 30;
+		function processVideo() {
+			try {
+				//if (!streaming) {
+					// clean and stop.
+				//	src.delete();
+				//	dst.delete();
+				//	return;
+				//}
+				//check_orientation()
+				let begin = Date.now();
+				// start processing.
+				cap.read(src);
+				cv.bitwise_and(src, src, imgBg, maskInv);
+				cv.add(imgBg, imgFg, sum);
+				let rect = new cv.Rect(0, 0, 480, 480);
+				final_sum = sum.roi(rect);
+				cv.imshow('canvasOutput', final_sum);
+				final_sum.delete()
+				// schedule the next one.
+				let delay = 1000/FPS - (Date.now() - begin);
+				setTimeout(processVideo, delay);
+			} catch (err) {
+				console.error(err);;
+			}
+		};
+
+		// schedule the first one.
+		setTimeout(processVideo, 0);
+	};
+ </script>
+ 
+			<script>
+			
+			
+				var label1 = document.querySelector("#label1"); 
+				label1.style.visibility = 'hidden'
+				var label2 = document.querySelector("#label2"); 
+				label2.style.visibility = 'hidden'
+				
+				var op_img = document.querySelector("#opimg");
+				
+				
+				function capture() {
+					var btnstart = document.getElementById('btnstart');
+					btnstart.innerText = "Scanning Started"
+					var canvas = document.getElementById('canvas');
+					orientation1	 = check_orientation()
+					if(orientation1 == "P")
+						video_element = "videoElement1"
+					else
+						video_element = "videoElement"
+					let video = document.getElementById(video_element);
+					video.play()
+					canvas.style.visibility = 'hidden'
+					canvas.width = video.videoWidth/4;
+					canvas.height = video.videoHeight/4;
+					c = canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth/4, video.videoHeight/4); // for drawing the video element on the canvas
+					
+					var c = document.getElementById("canvas");
+					var ctx = c.getContext("2d");
+					var img = document.getElementById("canvas");
+					ctx.drawImage(img, c.width, c.height);
+					var dataURL = c.toDataURL();
+					var token = '{{csrf_token}}';
+					$.ajax({
+						headers: { "X-CSRFToken": token },
+						type: "POST",
+						url: "{% url 'send_video' %}",
+						data : {
+							'image': dataURL,
+							'orientation': orientation1,
+						},
+						success: function(data){
+							
+							if(data.scanned == 'notyet')
+								{
+									//op_img.src = data.image
+									capture()
+									console.log(data.inner_circle, data.outter_circle)
+									
+								}
+							else
+							{
+								video.pause();
+								
+								var btnstart = document.getElementById('btnstart');
+								btnstart.innerText = "Start Scan"
+								var label2 = document.querySelector("#label2"); 
+								label2.style.visibility = 'visible'
+								var output_table = document.querySelector("#output_table");
+								//op_img.src = data.image
+								output_table.innerHTML = data.df
+								//alert(data.df)
+								orientation1 = check_orientation()
+								if(orientation1 == "P")
+									video_element = "videoElement1"
+								else
+									video_element = "videoElement"
+								let video = document.getElementById(video_element);
+								alert('Scan Completed')
+								
+							}
+							},
+						
+						error: function (jqXHR, exception) {
+								console.log('Ajax Error',jqXHR);
+								capture()
+								// Your error handling logic here..
+							}
+						});
+						
+				}
+				
+				
+			</script>
+        
+        {% endblock %}
+      </div>
+    </div>
+    <br /><br />
+    <footer class="footer">
+      <div class="container">
+        <div class="row row-grid align-items-center mb-5">
+          <div class="col-lg-12">
+            <h3 class="text-primary font-weight-light mb-2">Thanks for visiting our site</h3>
+            <h4 class="mb-0 font-weight-light">[Any other message if you wish to include]</h4>
+          </div>
+          
+        </div>
+        <hr>
+        <div class="row align-items-center justify-content-md-between">
+          <div class="col-md-6">
+            <div class="copyright">
+              Copyright [Company Name]
+            </div>
+          </div>
+          <div class="col-md-6">
+            <ul class="nav nav-footer justify-content-end">
+              <li class="nav-item">
+                  
+                developed by <a href="" target="_blank"> K. Harini </a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{% static 'assets/js/core/jquery.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/core/popper.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/core/bootstrap.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/plugins/perfect-scrollbar.jquery.min.js' %}"></script>
+  <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+  <script src="{% static 'assets/js/plugins/bootstrap-switch.js' %}"></script>
+  <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+  <script src="{% static 'assets/js/plugins/nouislider.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/plugins/moment.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/datetimepicker.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/plugins/bootstrap-datepicker.min.js' %}"></script>
+
+  <!-- Control Center for Argon UI Kit: parallax effects, scripts for the example pages etc -->
+  <!--  Google Maps Plugin    -->
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+</body>
+
+</html>
