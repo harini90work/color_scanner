@@ -204,13 +204,21 @@ def detect_color(main_img, original_img = None, factor = None):
     return output, final_result
 
 
-def colordetector(ip_img):
+def colordetector(ip_img, orientation):
     #
+    if(orientation == 'P'):
+        mask1file = 'mask1-p.png'
+        mask2file = 'mask2-p.png'
+        mask3file = 'mask3-p.png'
+    else:
+        mask1file = 'mask1.png'
+        mask2file = 'mask2.png'
+        mask3file = 'mask3.png'
     original_img = ip_img.copy()
     final_result = pd.DataFrame()
-    mask1 = im.readmask('./static/assets/img/masks/mask1.png')
-    mask2 = im.readmask('./static/assets/img/masks/mask2.png')
-    mask3 = im.readmask('./static/assets/img/masks/mask3.png')
+    mask1 = im.readmask('./static/assets/img/masks/{mask1file}')
+    mask2 = im.readmask('./static/assets/img/masks/{mask2file}')
+    mask3 = im.readmask('./static/assets/img/masks/{mask3file}')
     mask4 = cv2.bitwise_xor(mask2, mask3)
     
     main_img = cv2.bitwise_and(ip_img,ip_img,mask=mask1)
@@ -276,17 +284,23 @@ def colordetector(ip_img):
 
 
 #%
-def col_detect_main(ip_img):
+def col_detect_main(ip_img, orientation):
+    if(orientation == 'P'):
+        mask4file = 'mask4-p.png'
+        mask5file = 'mask5-p.png'
+    else:
+        mask4file = 'mask4.png'
+        mask5file = 'mask5.png'
     status = False
-    mask4 = im.readimg('./static/assets/img/masks/mask4.png')
-    mask5 = im.readimg('./static/assets/img/masks/mask5.png')
+    mask4 = im.readimg(f'./static/assets/img/masks/{mask4file}')
+    mask5 = im.readimg(f'./static/assets/img/masks/{mask5file}')
     ip_img = im.resize_image(ip_img,mask4,interpolation = cv2.INTER_CUBIC)
     mask6 = cv2.add(mask4, mask5)
     mask6 = cv2.cvtColor(mask6, cv2.COLOR_BGR2GRAY)
     overlay = im.blankimg(mask6.shape[0], mask6.shape[1])
     overlay = cv2.bitwise_and(overlay, overlay, mask = mask6)
     frame = ip_img.copy()
-    output, df = colordetector(frame)
+    output, df = colordetector(frame, orientation)
 
     output = cv2.bitwise_xor(overlay,output)
     if(df.shape[0] == 21):
