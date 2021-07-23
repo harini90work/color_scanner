@@ -289,8 +289,9 @@ function iOS() {
 }
 </script>
 <script>
-	if(iOS()){
-	
+var ioscheck = iOS()
+	if(ioscheck){
+		console.log('IOS device detected')
 		orientation1 = check_orientation()
 		if(orientation1 == "P")
 			video_element = "videoElement1"
@@ -366,6 +367,7 @@ function iOS() {
 	}
 	else
 	{
+		console.log('NO IOS device detected')
 		orientation1 = check_orientation()
 		if(orientation1 == "P")
 			video_element = "videoElement1"
