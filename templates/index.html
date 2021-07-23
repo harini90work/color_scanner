@@ -150,10 +150,10 @@
 						<label for="serverfeed">Server Feed</label><br>
 						</div>
 						<h1 class="h3"> Input Video Feed </h1>
-						<div class="crop">	<video autoplay="true" id="videoElement" style = "display: none"  width = 640 height = 480>
+						<div class="crop">	<video autoplay="true" id="videoElement" style = "display: none"  width = 640 height = 480 playsinline=true>
 							
 							</video>
-							<video autoplay="true" id="videoElement1" style = "display: none"  width = 480 height = 640>
+							<video autoplay="true" id="videoElement1" style = "display: none"  width = 480 height = 640 playsinline=true>
 							
 							</video>
 							<canvas id="canvasOutput" style="object-fit: cover;" width = 480 height=480 ></canvas>
@@ -297,23 +297,72 @@ function iOS() {
 		else
 			video_element = "videoElement"
 		const video = document.getElementById(video_element);
+		
 		video.style.width = document.width + 'px';
 		video.style.height = document.height + 'px';
 		video.setAttribute('autoplay', '');
 		video.setAttribute('muted', '');
 		video.setAttribute('playsinline', '');
 
-		var constraints = {
-			 audio: false,
-			 video: {
-				 facingMode: 'environment'
-			 }
+		
+
+		
+		
+		
+		const button = document.getElementById('button');
+		const select = document.getElementById('videoSource');
+		let currentStream;
+
+		function stopMediaTracks(stream) {
+		stream.getTracks().forEach(track => {
+		track.stop();
+		});
 		}
 
+		function gotDevices(mediaDevices) {
+		select.innerHTML = '';
+		select.appendChild(document.createElement('option'));
+		let count = 1;
+		mediaDevices.forEach(mediaDevice => {
+		if (mediaDevice.kind === 'videoinput') {
+		  const option = document.createElement('option');
+		  option.value = mediaDevice.deviceId;
+		  const label = mediaDevice.label || `Camera ${count++}`;
+		  const textNode = document.createTextNode(label);
+		  option.appendChild(textNode);
+		  select.appendChild(option);
+		}
+		});
+		}
+
+		button.addEventListener('click', event => {
+		if (typeof currentStream !== 'undefined') {
+		stopMediaTracks(currentStream);
+		}
+		const videoConstraints = {};
+		if (select.value === '') {
+		videoConstraints.facingMode = 'environment';
+		} else {
+		videoConstraints.deviceId = { exact: select.value };
+		}
+		const constraints = {
+		video: videoConstraints,
+		audio: false
+		};
 		navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
 			video.srcObject = stream;
+			currentStream = stream;
+			return navigator.mediaDevices.enumerateDevices();
+		}).then(gotDevices)
+		.catch(error => {
+		  console.error(error);
 		});
 		start_video()
+		
+		
+		});
+
+		navigator.mediaDevices.enumerateDevices().then(gotDevices);
 	}
 	else
 	{
