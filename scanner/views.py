@@ -30,9 +30,18 @@ def get_videofeed(request):
     img1 = decode_img(img)
     orientation = request.POST.get('orientation')
     server_feed = request.POST.get('serverfeed')
-    print(server_feed,type(server_feed))
+    try:
+        innerthreshold = int(request.POST.get('innerthreshold'))
+    except:
+        innerthreshold = 160
+    try:
+        outterthreshold = int(request.POST.get('outterthreshold'))
+    except:
+        outterthreshold = 160
     
-    output, df, status, inner_circle_intensity, outercircle_intensity = col_detect_main(img1, orientation )
+    print('received threshold', innerthreshold,outterthreshold, type(innerthreshold), type(outterthreshold))
+    
+    output, df, status, inner_circle_intensity, outercircle_intensity = col_detect_main(img1, orientation, innerthreshold, outterthreshold )
     output = im.resize_image(output, fx=0.4, fy=0.4, interpolation = cv2.INTER_CUBIC)
     ip_img = encode_img(output)
     

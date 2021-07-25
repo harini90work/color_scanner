@@ -204,7 +204,7 @@ def detect_color(main_img, original_img = None, factor = None):
     return output, final_result
 
 
-def colordetector(ip_img, orientation):
+def colordetector(ip_img, orientation,  innerthreshold = 157, outterthreshold = 37):
     #
     if(orientation == 'P'):
         mask1file = 'mask1-p.png'
@@ -236,7 +236,7 @@ def colordetector(ip_img, orientation):
         test1 = 0
 
     innercircle_intensity = int(test1)
-    if(test1>=157):
+    if(test1>=innerthreshold): #157
         test1 = True
         factor = np.median(np.divide(255,test).mean(axis=1),axis=0)
         print('Before filter factor', factor)
@@ -259,7 +259,7 @@ def colordetector(ip_img, orientation):
         print('Outer Circle Median color', test2)
         outercircle_intensity  = test2
 
-        if(test2<=37):
+        if(test2<=outterthreshold): #37
             test2 = True
         else:
             test2 = False
@@ -284,7 +284,7 @@ def colordetector(ip_img, orientation):
 
 
 #%
-def col_detect_main(ip_img, orientation):
+def col_detect_main(ip_img, orientation, innerthreshold, outterthreshold):
     if(orientation == 'P'):
         mask4file = 'mask4-p.png'
         mask5file = 'mask5-p.png'
@@ -301,7 +301,7 @@ def col_detect_main(ip_img, orientation):
     overlay = im.blankimg(mask6.shape[0], mask6.shape[1])
     overlay = cv2.bitwise_and(overlay, overlay, mask = mask6)
     frame = ip_img.copy()
-    output, df, inner_circle_intensity, outercircle_intensity = colordetector(frame, orientation)
+    output, df, inner_circle_intensity, outercircle_intensity = colordetector(frame, orientation,  innerthreshold, outterthreshold)
 
     output = cv2.bitwise_xor(overlay,output)
     if(df.shape[0] == 21):
