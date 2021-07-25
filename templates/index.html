@@ -141,14 +141,28 @@
         {% block content %}
 		{% csrf_token %}
 			<div class="container">
-				<div class="row align-items-center">
-					<div class="col-lg-7">
-						<div >
+				<div class = "row">
+					<div class = "col-lg-4">
 						 <select id="videoSource"></select>
 						<button id = "button"> Access Camera </button>
+					</div>
+					<div class = "col-lg-2">
 						<input type="checkbox" id="serverfeed" name="serverfeed" value="Yes">
 						<label for="serverfeed">Server Feed</label><br>
-						</div>
+					</div>
+					<div class = "col-lg-6">
+						<input type="textbox" id="innerthreshold" name="innerthreshold" value="" onchange="updatethreshold()" onfocusout="updatethreshold()">
+						<label for="innerthreshold">Inner Threshold</label><br>
+						
+						<input type="textbox" id="outterthreshold" name="outterthreshold" value="" onchange="updatethreshold()" onfocusout="updatethreshold()">
+						<label for="outterthreshold">Outter Threshold</label><br>
+						
+						<button id = "resetthreshold" onclick = "reset()"> Reset Threshold</button>
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-lg-6">
+						
 						<h1 class="h3"> Input Video Feed </h1>
 						<div class="crop">	<video autoplay="true" id="videoElement" style = "display: none"  width = 640 height = 480 playsinline=true>
 							
@@ -163,7 +177,7 @@
 							<canvas id = "overlay" style = "display: none" ></canvas>
 						</div>
 					</div>
-					<div class = 'col-lg-5' style = "display: none" id="serverop">
+					<div class = 'col-lg-6' style = "display: none" id="serverop">
 						<h1 id = "label1" class="h3"> Processed at Server </h1>
 						<img  id ='opimg' alt = "output"></img>
 					</div>
@@ -199,6 +213,40 @@
   margin-left: -15px;
 }
 </style>
+<script>
+	// Module to get and set the Inner and outter threshold value
+	
+	inner_threshold = localStorage.getItem("innerthreshold");
+	if(inner_threshold == null)
+		inner_threshold = 157
+	outter_threshold = localStorage.getItem("outterthreshold");
+	if(outter_threshold == null)
+		outter_threshold = 37
+	var outterthreshold = document.getElementById('outterthreshold');
+	var innerthreshold = document.getElementById('innerthreshold');
+	innerthreshold.value = inner_threshold
+	outterthreshold.value = outter_threshold
+	
+	function updatethreshold()
+	{
+		var outterthreshold = document.getElementById('outterthreshold');
+		var innerthreshold = document.getElementById('innerthreshold');
+		localStorage.setItem("innerthreshold", innerthreshold.value);
+		localStorage.setItem("outterthreshold", outterthreshold.value);
+		
+		
+		
+	}
+	function reset()
+	{
+		localStorage.setItem("innerthreshold", 157);
+		localStorage.setItem("outterthreshold", 37);
+		inner_threshold = localStorage.getItem("innerthreshold");
+		outter_threshold = localStorage.getItem("outterthreshold");
+		innerthreshold.value = inner_threshold
+		outterthreshold.value = outter_threshold
+	}
+</script>
 <script>
 function update_mask(mask_name, sufix)
 {
@@ -540,7 +588,8 @@ var ioscheck = iOS()
 					var dataURL = c.toDataURL();
 					var token = '{{csrf_token}}';
 					var serverfeed = document.getElementById('serverfeed').checked
-					
+					inner_threshold = localStorage.getItem("innerthreshold");
+					outter_threshold = localStorage.getItem("outterthreshold");
 					$.ajax({
 						headers: { "X-CSRFToken": token },
 						type: "POST",
@@ -549,6 +598,8 @@ var ioscheck = iOS()
 							'image': dataURL,
 							'orientation': orientation1,
 							'serverfeed': serverfeed,
+							'innerthreshold': inner_threshold,
+							'outterthreshold': outter_threshold,
 						},
 						success: function(data){
 							
