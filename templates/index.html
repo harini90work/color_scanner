@@ -444,7 +444,6 @@ var ioscheck = iOS()
 		  const textNode = document.createTextNode(label);
 		  option.appendChild(textNode);
 		  select.appendChild(option);
-		  localStorage.setItem("camera", mediaDevice.deviceId);
 		}
 		});
 		}
@@ -457,13 +456,7 @@ var ioscheck = iOS()
 		if (select.value === '') {
 		videoConstraints.facingMode = 'environment';
 		} else {
-		camera = localStorage.getItem("camera");
-		videoConstraints.deviceId = { 
-		
-		
-		
-		exact: camera };
-		
+		videoConstraints.deviceId = { exact: select.value };
 		}
 		const constraints = {
 		video: videoConstraints,
@@ -478,6 +471,7 @@ var ioscheck = iOS()
 		  console.error(error);
 		});
 		start_video()
+		
 		
 		});
 
@@ -516,7 +510,6 @@ var ioscheck = iOS()
 		  const textNode = document.createTextNode(label);
 		  option.appendChild(textNode);
 		  select.appendChild(option);
-		  localStorage.setItem("camera", mediaDevice.deviceId);
 		}
 		});
 		}
@@ -529,16 +522,12 @@ var ioscheck = iOS()
 		if (select.value === '') {
 		videoConstraints.facingMode = 'environment';
 		} else {
-		camera = localStorage.getItem("camera");
-		videoConstraints.deviceId = { exact: camera };
-		
+		videoConstraints.deviceId = { exact: select.value };
 		}
 		const constraints = {
 		video: videoConstraints,
 		audio: false
 		};
-		
-
 		navigator.mediaDevices
 		.getUserMedia(constraints)
 		.then(stream => {
@@ -552,7 +541,6 @@ var ioscheck = iOS()
 		  console.error(error);
 		});
 		start_video()
-		
 		});
 
 		navigator.mediaDevices.enumerateDevices().then(gotDevices);
@@ -742,7 +730,7 @@ var ioscheck = iOS()
 						});
 						}catch (err) {
             				//console.error(err);
-            				capture()
+            				//capture()
             				
             			}
 						
