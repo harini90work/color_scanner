@@ -39,9 +39,24 @@ def get_videofeed(request):
     except:
         outterthreshold = 160
     
-    print('received threshold', innerthreshold,outterthreshold, type(innerthreshold), type(outterthreshold))
+    try:
+        shadesbin = int(request.POST.get('shadesbin'))
+    except:
+        shadesbin = 14
+        
+    try:
+        saturationcutoff = int(request.POST.get('saturationcutoff'))
+    except:
+        saturationcutoff = 10
+        
+    try:
+        valuecutoff = int(request.POST.get('valuecutoff'))
+    except:
+        valuecutoff = 50
+        
+    print('received threshold', shadesbin,saturationcutoff,valuecutoff, type(valuecutoff))
     
-    output, df, status, inner_circle_intensity, outercircle_intensity = col_detect_main(img1, orientation, innerthreshold, outterthreshold )
+    output, df, status, inner_circle_intensity, outercircle_intensity = col_detect_main(img1, orientation, innerthreshold, outterthreshold, shadesbin,saturation_cutoff=saturationcutoff,value_cutoff=valuecutoff )
     output = im.resize_image(output, fx=0.4, fy=0.4, interpolation = cv2.INTER_CUBIC)
     ip_img = encode_img(output)
     
