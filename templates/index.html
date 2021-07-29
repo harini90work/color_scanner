@@ -725,9 +725,12 @@ var ioscheck = iOS()
 			</script>
         <script>
 		$( document ).ready(function() {
+
+		});
+		window.addEventListener('load', function () {
 			const button = document.getElementById('button');
 			button.click()
-		});
+		})
 		
 		</script>
         {% endblock %}
