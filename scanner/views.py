@@ -9,6 +9,20 @@ except:
     import Img_Proc as im
     
 def decode_img(img):
+    '''
+    Convert the Base 64 to Image
+
+    Parameters
+    ----------
+    img : Base 64 Image
+        Input Image in base 64 format.
+
+    Returns
+    -------
+    img1 : 
+        Decoded base 64 image to numpy image
+
+    '''
     header, encoded = img.split(",", 1)
     img_b64decode = base64.b64decode(encoded)
     img_array = np.fromstring(img_b64decode,np.uint8)
@@ -17,6 +31,20 @@ def decode_img(img):
 
 
 def encode_img(img1):
+    '''
+    Convert NUmpy image to Base 64 Image
+
+    Parameters
+    ----------
+    img1 : Numpy Image
+        Input Image.
+
+    Returns
+    -------
+    img1 : Base 64 String
+        COnverted Image.
+
+    '''
     retval, buffer_img= cv2.imencode('.jpg', img1)
     img1 = base64.b64encode(buffer_img)
     img1 = u'data:img/jpeg;base64,'+img1.decode('utf-8')
@@ -26,6 +54,20 @@ def encode_img(img1):
 
 
 def get_videofeed(request):
+    '''
+    Ajax Function to receive the Image frame from HTML SPACE
+
+    Parameters
+    ----------
+    request : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    Dict
+        Input data required to display in HTML Ajax function.
+
+    '''
     img = request.POST.get('image')
     img1 = decode_img(img)
     orientation = request.POST.get('orientation')

@@ -5,7 +5,7 @@
         
     Description:
     -----------
-        *
+        * This is the main alogirthm file to scan the color
         *
     
     Objective:
@@ -30,25 +30,29 @@ try:
 except:
     import Img_Proc as im
 import cv2
-#%% Resize image
-#mask_name = 'mask5'
-#file = f'./static/assets/img/masks/{mask_name}.png'
-#ofile = f'./static/assets/img/masks/{mask_name}-p.png'
-#Ref_potrat = './static/assets/img/masks/Ref_potrat.png'
-#file1 = im.readimg(file)
-#ref = im.readimg(Ref_potrat)
-#file2 = im.resize_image(file1, ref)
-#cv2.imwrite(ofile, file2)
-#shift the image
-#file = './static/assets/img/masks/mask1.png'
-#file1 = im.readimg(file)
-#file1[:,0:640-63] =  file1[:,63:]
-#cv2.imwrite(file, file1)
-#%%
+
 
 #% Project Specific Functions
 
 def extract_circle(img, r = 50, xoffset = 0):
+    '''
+     This function is used to extract the sub circle color information if dodle is correctly matched
+
+    Parameters
+    ----------
+    img : 3 Channel Image
+        Dodule corrected image.
+    r : int, optional
+        Radius of small circle. The default is 50.
+    xoffset : int, optional
+        Hyper Parameter to adjust the small circle size, if required to change through configuration. The default is 0.
+
+    Returns
+    -------
+    circle_list : List
+        Append proper circle list.
+
+    '''
     circle_list = [(480+xoffset,200,r,'Grid 1;3'),
                    (630+xoffset,200,r,'Grid 1;4'),
                    (780+xoffset,200,r,'Grid 1;5'),
@@ -80,6 +84,29 @@ def extract_circle(img, r = 50, xoffset = 0):
 
 
 def extract_small_circle(cropped):
+    '''
+    This function is used to extract color information from the given small circle list
+        1. It will detect whether the sub small circle is in circle shape
+        2. It will draw bounding rectangle
+    Parameters
+    ----------
+    cropped : numpy Image
+        Small circle cropped image.
+
+    Returns
+    -------
+    cropped : numpy Image
+        Cropped Image.
+    x : int
+        x.
+    y : int
+        y.
+    w : int
+        width.
+    h : int
+        height.
+
+    '''
     original = cropped.copy()
     gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray,(9,9),2)
@@ -130,6 +157,28 @@ def extract_small_circle(cropped):
 
 
 def rgb_to_hsv(r, g, b):
+    '''
+    This function is used to convert RGB code to equalent HSV code. This function is used to convert hex to number process.
+
+    Parameters
+    ----------
+    r : int
+        Red value.
+    g : int
+        Green Value.
+    b : int
+        Blue Value.
+
+    Returns
+    -------
+    h : int
+        Hue value.
+    s : int
+        Satuaration value.
+    v : int
+        Value.
+
+    '''
     r, g, b = r/255.0, g/255.0, b/255.0
     mx = max(r, g, b)
     mn = min(r, g, b)
@@ -150,6 +199,36 @@ def rgb_to_hsv(r, g, b):
     return h, s, v
 
 def rgb_to_digit(r, g, b, shades_bin = 12, max_shades = 14, brightness_bin = 10, saturation_cutoff = 10, value_cutoff = 50 ):
+    '''
+    This function is used to convert RGB color to Digit
+
+    Parameters
+    ----------
+    r : int
+        Red color intensity.
+    g : int
+        Green Color Intensity.
+    b : int
+        Blue color Intensity.
+    shades_bin : int, optional
+        Number of shades we need to group. The default is 12.
+    max_shades : int, optional
+        Maximum threshold of shades. The default is 14.
+    brightness_bin : int, optional
+        Number of brightness of the color to be splitted. The default is 10.
+    saturation_cutoff : int, optional
+        Maximum threshold of Saturation cutoff. The default is 10.
+    value_cutoff : int, optional
+        Value cutoff. The default is 50.
+
+    Returns
+    -------
+    final_txt : str
+        Final converted digit.
+    rgb : tuple
+        RGB color.
+
+    '''
     h,s,v = rgb_to_hsv(r, g, b)
     v = v-0.01
     #print(h,s,v)
@@ -202,6 +281,36 @@ def rgb_to_digit(r, g, b, shades_bin = 12, max_shades = 14, brightness_bin = 10,
 
     
 def detect_color(main_img, original_img = None, factor = None, shades_bin = 12, max_shades = 14, brightness_bin = 10, saturation_cutoff = 10, value_cutoff = 50):
+    '''
+    Main subfunction for detecting color
+
+    Parameters
+    ----------
+    main_img : numpy Image
+        Input Image.
+    original_img : numpy Image, optional
+        Reference Image. The default is None.
+    factor : tuple, optional
+        Set the Factor. The default is None.
+    shades_bin : int, optional
+        Number of shades we need to group. The default is 12.
+    max_shades : int, optional
+        Maximum threshold of shades. The default is 14.
+    brightness_bin : int, optional
+        Number of brightness of the color to be splitted. The default is 10.
+    saturation_cutoff : int, optional
+        Maximum threshold of Saturation cutoff. The default is 10.
+    value_cutoff : int, optional
+        Value cutoff. The default is 50.
+
+    Returns
+    -------
+    output : numpy image
+        Processed Image.
+    final_result : Pandas Data Frame
+        Processed Data Table.
+
+    '''
     if(factor is None):
         factor = np.array([1,1,1])
     final_result = pd.DataFrame()
@@ -283,6 +392,42 @@ def detect_color(main_img, original_img = None, factor = None, shades_bin = 12, 
 
 
 def colordetector(ip_img, orientation,  innerthreshold = 157, outterthreshold = 37, shades_bin = 12, max_shades = 14, brightness_bin = 10, saturation_cutoff = 10, value_cutoff = 50):
+    '''
+    This is the Main function to extract the color information
+
+    Parameters
+    ----------
+    ip_img : Numpy Image
+        Input Image to process.
+    orientation : str
+        Camera Orientation.
+    innerthreshold : int, optional
+        Inner Circle Threshold. The default is 157.
+    outterthreshold : int, optional
+        Outter Circle Threshold. The default is 37.
+    shades_bin : int, optional
+        Number of shades we need to group. The default is 12.
+    max_shades : int, optional
+        Maximum threshold of shades. The default is 14.
+    brightness_bin : int, optional
+        Number of brightness of the color to be splitted. The default is 10.
+    saturation_cutoff : int, optional
+        Maximum threshold of Saturation cutoff. The default is 10.
+    value_cutoff : int, optional
+        Value cutoff. The default is 50.
+
+    Returns
+    -------
+    op_img : Numpy Image
+        Processed Image.
+    final_result : Pandas Data Frame
+        Data Table.
+    innercircle_intensity : int
+        Inner Circle Intensity.
+    outercircle_intensity : int
+        OuterCircle Intensity .
+
+    '''
     #
     if(orientation == 'P'):
         mask1file = 'mask1-p.png'
@@ -363,6 +508,45 @@ def colordetector(ip_img, orientation,  innerthreshold = 157, outterthreshold = 
 
 #%
 def col_detect_main(ip_img, orientation, innerthreshold, outterthreshold, shades_bin = 14, max_shades = 99, brightness_bin = 10, saturation_cutoff = 10, value_cutoff = 50):
+    '''
+    Master function to process the entire Image
+
+    Parameters
+    ----------
+    ip_img : Numpy Image
+        Input Image to process.
+    orientation : str
+        Camera Orientation.
+    innerthreshold : int, optional
+        Inner Circle Threshold. The default is 157.
+    outterthreshold : int, optional
+        Outter Circle Threshold. The default is 37.
+    shades_bin : int, optional
+        Number of shades we need to group. The default is 12.
+    max_shades : int, optional
+        Maximum threshold of shades. The default is 14.
+    brightness_bin : int, optional
+        Number of brightness of the color to be splitted. The default is 10.
+    saturation_cutoff : int, optional
+        Maximum threshold of Saturation cutoff. The default is 10.
+    value_cutoff : int, optional
+        Value cutoff. The default is 50.
+
+    Returns
+    -------
+    output : Numpy Image
+        Processed Image.
+    df : Pandas Data Frame
+        Final Result DataFrame.
+    status : Bool
+        Whether 21 circles extracted.
+    innercircle_intensity : int
+        Inner Circle Intensity.
+    outercircle_intensity : int
+        OuterCircle Intensity .
+
+
+    '''
     if(orientation == 'P'):
         mask4file = 'mask4-p.png'
         mask5file = 'mask5-p.png'

@@ -5,6 +5,23 @@ import os
 
 #Image Functions used in the project
 def display(img, name = 'Preview', wait_sec = 0):
+    '''
+    Preview the Image
+
+    Parameters
+    ----------
+    img : Image
+        Input Image.
+    name : Str, optional
+        Name of the window. The default is 'Preview'.
+    wait_sec : int, optional
+        How much time the window needs to be displayed. The default is 0.
+
+    Returns
+    -------
+    None.
+
+    '''
     cv2.imshow(name, img)
     if cv2.waitKey(wait_sec) & 0xFF == ord('q'):
         pass
@@ -12,6 +29,30 @@ def display(img, name = 'Preview', wait_sec = 0):
     
     
 def resize_image(img, ref_img = None, color = (0,0,0), fx = None, fy = None, interpolation = None):
+    '''
+    Resize the Image
+
+    Parameters
+    ----------
+    img : Numpy Image
+        Input Imge.
+    ref_img : Numpy Image, optional
+        Reference Image to considered to resize the image. The default is None.
+    color : Tuple, optional
+        RGB color to be filled in the remaining area. The default is (0,0,0).
+    fx : float, optional
+        Number of time the image to be exanded in X-axis. The default is None.
+    fy : float, optional
+         Number of time the image to be exanded in y-axis. The default is None.
+    interpolation : str, optional
+        Interpolation Method to be used while resizing the image. The default is None.
+
+    Returns
+    -------
+    image_final : Numpy Image
+        Resized Image.
+
+    '''
     if(ref_img is None):
         ref_img = img.copy()
         ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2GRAY)
@@ -51,12 +92,40 @@ def readimg(filename):
     return img
 
 def readmask(filename):
+    '''
+    Function to read the Mask File
+
+    Parameters
+    ----------
+    filename : str
+        Full path where the mask file is availabe.
+
+    Returns
+    -------
+    img : Numpy Image
+        Mask Image in Grayscale mode.
+
+    '''
     img = readimg(filename)
     if(img is not None):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     return img
 
 def rgb_to_hex(rgb):
+    '''
+    Conver the RGB value to Hex code
+
+    Parameters
+    ----------
+    rgb : TYPE
+        RGB Color.
+
+    Returns
+    -------
+    Str
+        Hex equivalent of RGB.
+
+    '''
     return '%02x%02x%02x' % rgb
 
 
